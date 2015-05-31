@@ -3,9 +3,15 @@ package client;
 import java.util.Scanner;
 
 public class test {
+	Game testGame;
 	
-	public static void testDelivery(){
-		Game testGame = new Game();
+	public static void main(String[] args){
+		test game = new test();
+		game.testRobAction();
+	}
+	
+	public void testDelivery(){
+		testGame = new Game();
 		testGame.gamerNumber = 8;
 		
 		long pre = System.currentTimeMillis();
@@ -22,21 +28,39 @@ public class test {
 		}
 	}
 	
-	public static void testGame(){
-		/*
-		System.out.println("Input the room size(player number):");
-		Scanner sc = new Scanner(System.in);
-		while(true){
-			String s = sc.nextLine();
-			int x = sc.nextInt();
-			
-		}*/
-		Game test = new Game(8);
-		test.start();
+	public void testGame(){
+		testGame = new Game(8);
+		testGame.start();
 	}
 	
-	public static void main(String[] args){
-		//testDelivery();
-		testGame();
+	public void testRobAction(){
+		testGame = new Game(8);
+		testGame.start();
+		ClientOperation operation = new ClientOperation();
+		operation.start();
+	}
+	
+	class ClientOperation extends Thread {
+		Game test;
+		
+		public ClientOperation() {
+		}
+		
+		public void run() {
+			Scanner sc = new Scanner(System.in);
+			while(true) {
+				int player = sc.nextInt();
+				testGame.robFlag = true;
+				testGame.actionRob(player);
+				// testGame.timerResume();
+			}
+		}
+	}
+
+	
+	public void testEnd(){
+		
 	}
 }
+
+

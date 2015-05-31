@@ -10,16 +10,26 @@ import java.util.TimerTask;
 *************************************************************/
 
 public class Game {
-	int gamerNumber;
-	int currentCard;
-	int currentGamer;
+	int gamerNumber;						// total number of gamers
+	int currentCard;						// new shown card
+	
+	int currentGamer;						// record the gamer who turn cards
+	int nextGamer;
+	
 	int currentMode;						// mode=0，正常；mode=1, 一起翻牌；mode=2，一起抢；mode=3，变色
+	int nextMode;
+	
 	int   totemCardsNumber;					// number of cards under totem
 	int[] totemCards;						// cards under totem
+	
+	boolean robFlag = false;				// actionFlag
+	boolean startFromTimer1 = false;
+	boolean startFromTimer2 = false;
+	
 	Gamer[] gamers;							// player
 	Timer timer1;
 	Timer timer2;
-	volatile int count = 5;
+	volatile int count = 5;					// delay for 5s
 	
 	int punishedGuy;						// player who will be punished after a rob action
 	
@@ -44,7 +54,9 @@ public class Game {
 	public void init(){						// initiate the value
 		gamerNumber = 0;
 		currentMode = 0;
+		nextMode = 0;
 		currentGamer = 0;
+		nextGamer = 0;
 		totemCardsNumber = 0;
 		punishedGuy = -1;
 		for(int i = 0; i<8; i++){
@@ -89,18 +101,54 @@ public class Game {
 	}
 
 	public void turnCard(){
-		currentCard = gamers[currentGamer].turnCard();
-		if(currentCard < 3){
-			currentMode = 1;				// 下轮大家一起翻牌
+		currentGamer = nextGamer;
+		currentMode = nextMode;
+		nextMode = 0;
+		
+		if(currentMode != 1){
+			currentCard = gamers[currentGamer].turnCard();
+			System.out.println("玩家"+currentGamer+"翻出的牌为："+currentCard);
+			nextGamer = (currentGamer+1) % gamerNumber;
+			
+			if(currentCard < 3){
+				nextMode = 1;					// 下轮大家一起翻牌
+			}
+			else if(currentCard < 6){
+				currentMode = 2;				// 这轮大家一起抢
+			}
+			else if(currentCard < 8){
+				nextMode = 3;					// 下轮开始按颜色取同
+			}
+			else {
+				currentMode = 0;				// 正常
+			}
+			
 		}
-		else if(currentCard < 6){
-			currentMode = 2;				// 这轮大家一起抢
-		}
-		else if(currentCard < 8){
-			currentMode = 3;				// 下轮开始按颜色取同
-		}
-		else {
-			currentMode = 0;				// 正常
+		else{
+			boolean outerArrow = false;
+			boolean functionCard = false;
+			for(int i = 0; i<gamerNumber; i++){
+				currentCard = gamers[i].turnCard();
+				System.out.println("玩家"+i+"翻出的牌为："+currentCard);
+				
+				if(currentCard < 3){
+					nextMode = 1;					// 下轮大家一起翻牌
+					outerArrow = true;
+					functionCard = true;
+				}
+				else if(currentCard < 6){
+					currentMode = 2;				// 这轮大家一起抢
+					functionCard = true;
+				}
+				else if((!outerArrow) && currentCard < 8){
+					nextMode = 3;
+					functionCard = true;
+				}
+			}
+			
+			if(!functionCard && !outerArrow){
+				currentMode = 0;
+			}
 		}
 	}
 	
@@ -108,7 +156,7 @@ public class Game {
 		if(currentMode == 2){
 			return true;		
 		}
-		else if(currentMode > 0){
+		else if(currentCard < 8){
 			return false;		// robs are not allowed 
 		}
 		
@@ -118,24 +166,57 @@ public class Game {
 				if(i == gamerId){
 					continue;
 				}
-				if(currentCard == gamers[i].cardShown){
-					punishedGuy = i;
-					return true;
+				if(gamers[i].upCount == 0){
+					continue;
+				}
+				
+				if(currentMode == 0){
+					if((currentCard / 4) == (gamers[i].cardShown / 4)){
+						punishedGuy = i;
+						return true;
+					}
+				}
+				else if(currentMode == 3){
+					if((currentCard % 4) == (gamers[i].cardShown) % 4){
+						punishedGuy = i;
+						return true;
+					}
 				}
 			}
 		}
 		
-		else if(gamers[gamerId].cardShown == currentCard){
+		else{
+			if(gamers[gamerId].upCount == 0){
+				return false;
+			}
+			
+			if(currentMode == 0 &&  ((gamers[gamerId].cardShown/4) == (currentCard/4))){
+				punishedGuy = gamerId;
 				return true;
+			}
+			
+			else if(currentMode == 3 && ((gamers[gamerId].cardShown%4) == (currentCard%4))){
+				punishedGuy = gamerId;
+				return true;
+			}
 		}
 		
 		return false;
 	}
 	
 	public void actionRob(int gamerId){
-		boolean result = judgeRob(gamerId);
+		nextGamer = gamerId;
+		System.out.println("玩家"+gamerId+"抢到了图腾");
+		if(startFromTimer1){
+			timer2.cancel();
+		}
+		else if(startFromTimer2){
+			timer1.cancel();
+		}
 		
-		if(result == true){
+		boolean success = judgeRob(gamerId);
+		
+		if(success){
 			// put cards under totem
 			if(currentMode == 2){		
 				totemCardsNumber = gamers[gamerId].upCount;
@@ -155,10 +236,9 @@ public class Game {
 		else{	
 			// give all cards to the wrong action player
 			for(int i = 0; i < gamerNumber; i++){
-				if(i == gamerId){
+				if(i == gamerId || gamers[i].upCount == 0){
 					continue;
 				}
-				
 				gamers[gamerId].addCards(gamers[i].cardUp, gamers[i].upCount);
 				gamers[i].dropUpCards();
 			}
@@ -175,18 +255,21 @@ public class Game {
 				totemCardsNumber = 0;
 			}
 		}
+		
+		timerResume();
 	}
 	
     class Task1 extends TimerTask {
         public void run() {
+        	startFromTimer1 = false;
+        	startFromTimer2 = true;
         	System.out.println("倒计时： " + count);
     		count--;
-            if (count == 0) {
+    		
+    		if (count == 0) {
             	timer1.cancel();
             	
             	turnCard();
-    			System.out.println("玩家"+currentGamer+"翻出的牌为："+currentCard);
-    			currentGamer = (currentGamer+1) % gamerNumber;
             	
             	timer2 = new Timer(); 
             	count = 5;
@@ -199,12 +282,14 @@ public class Game {
         public void run() {
         	System.out.println("倒计时： " + count);
     		count--;
-            if (count == 0) {
+    		startFromTimer2 = false;
+    		startFromTimer1 = true;
+    		
+    		if (count == 0) {
             	timer2.cancel();
+            	startFromTimer1 = true;
             	
             	turnCard();
-    			System.out.println("玩家"+currentGamer+"翻出的牌为："+currentCard);
-    			currentGamer = (currentGamer+1) % gamerNumber;
     			
     			count = 5;
             	timer1 = new Timer(); 
@@ -213,6 +298,25 @@ public class Game {
         }
     }
 	
+    public void timerResume(){
+    	if(startFromTimer1){
+    		count = 2;
+    		timer1 = new Timer(); 
+        	timer1.scheduleAtFixedRate(new Task1(), 0, 1000);
+        	startFromTimer1 = false;
+    	}
+    	else if(startFromTimer2){
+    		count = 2;
+    		timer2 = new Timer(); 
+        	timer2.scheduleAtFixedRate(new Task2(), 0, 1000);
+        	startFromTimer2 = false;
+    	}
+    }
+    
+    public boolean isEnd(){
+    	return true;
+    }
+    
 	public void start(){
 		deliverCard();
 		for(int i = 0; i<8; i++){
@@ -270,7 +374,7 @@ class Gamer{
 
 	public void addCards(int[] addSet, int num){	// 输牌后加牌，将给定的牌堆加在栈底
 		for(int i = 0; i < num; i++){
-			downHead = (downHead - 1) % 80;
+			downHead = (downHead - 1 + 80) % 80;
 			cardDown[downHead] = addSet[i];
 		}
 	}
