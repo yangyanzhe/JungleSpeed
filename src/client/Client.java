@@ -9,6 +9,8 @@ import javax.swing.JFrame;
 public class Client extends JFrame {
 	static int defaultW = 1024;
 	static int defaultH = 768;
+	LoginDialog loginDialog;
+	RegisterDialog registerDialog;
 	
 	public Client() {
 		super("Jungle Speed");
@@ -20,10 +22,8 @@ public class Client extends JFrame {
 	
 	public void run() {
 		setVisible(true);
-		LoginDialog loginDialog = new LoginDialog(this);
-		RegisterDialog registerDialog = new RegisterDialog(this);
-		loginDialog.setRegisterDialog(registerDialog);
-		registerDialog.setLoginDialog(loginDialog);
+		loginDialog = new LoginDialog(this);
+		registerDialog = new RegisterDialog(this);
 		loginDialog.setVisible(true);
 	}
 	
