@@ -44,7 +44,7 @@ public class LoginDialog extends JDialog {
 		// 添加组件
 		welcomePanel = new JPanel();
 		welcomePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-		welcomePanel.add(new Label("欢迎来到图腾快手游戏"));
+		welcomePanel.add(new JLabel("欢迎来到图腾快手游戏"));
 		c.add(welcomePanel);
 		
 		usernamePanel = new JPanel();
