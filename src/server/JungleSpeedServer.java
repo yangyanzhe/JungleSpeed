@@ -1,13 +1,24 @@
 package server;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.TreeSet;
 import java.util.Vector;
 
 import javax.xml.stream.events.EndDocument;
@@ -29,7 +40,6 @@ class SOCKET {
 	BufferedReader is;	//输入流
 	PrintWriter os;		//输出流
 	String ID;			//用户名，是关键码
-	int Head;			//用户头像
 	int Grade;			//用户积分
 	int Rank;			//用户排名
 	int No;				//桌号
@@ -170,19 +180,265 @@ class Desk extends Game {
 	}
 }
 
-class UserManager {
-	public void loadFromFile() {
-		
+class User {
+	private String username;
+	private String password;
+	private int score = 0;
+	
+	public User(String username, String password) {
+		// TODO Auto-generated constructor stub
+		this.username = username;
+		this.password = password;
+		this.score = 0;
 	}
 	
-	public void outputToFile() {
-		
+	public String getUsername() {
+		return this.username;
 	}
+	
+	public String getPassword() {
+		return this.password;
+	}
+	
+	public int getScore() {
+		return this.score;
+	}
+	
+	public String toString(){
+		return username + " " + password + " " + " " + score + "\n";
+	}
+	
+	public void setScore(int s) {
+		this.score = s;
+	}
+	
+	public User copy() {
+		User r = new User(username, password);
+		r.setScore(score);
+		return r;
+	}
+}
+
+class UserManager{
+	private static final String fileName = "userdb.txt";
+	
+	private Set<User> userSet;
+	public UserManager(){
+		userSet = new TreeSet<User>(new Comparator<User>() {
+			@Override
+			public int compare(User a, User b) {
+				if (a.getScore() == b.getScore()){
+					return a.getUsername().compareTo(b.getUsername());
+				}
+				
+				if (a.getScore() > b.getScore()){
+					return 1;
+				}
+				return -1;
+			}
+		});
+	}
+	
+	public void loadFromFile() {
+		boolean ifSucceed = readFileByLines();
+		if (! ifSucceed){
+			System.out.println("Load user info failed, please check " + fileName);
+		} else{
+			System.out.println("Load user info successfully!");
+		}
+	}
+	
+	public void outputToFile(){
+		boolean ifSucceed = writeFileByLines();
+		if (! ifSucceed){
+			System.out.println("Output user info failed, please check " + fileName);
+		} else{
+			System.out.println("Output user info successfully!");
+		}
+	}
+	
+	public boolean add(String username, String password){
+		User ifExist = findByUsername(username);
+		if (ifExist != null){
+			System.out.println("Add new user failed. Username has existed.");
+			return false;
+		}
+			
+		User user = new User(username, password);
+		boolean ifSucceed = add(user);
+		if (! ifSucceed){
+			System.out.println("Add new user failed. Unknown reason.");
+			return false;
+		} else{
+			System.out.println("Add new user successfully!");
+			return true;
+		}
+	}
+	public boolean remove(String username, String password){
+		User match = verify(username, password);
+		
+		if (match == null){
+			System.out.println("Remove user failed. Wrong username or password.");
+			return false;
+		}
+			
+		boolean ifSucceed = remove(match);
+		if (ifSucceed){
+			System.out.println("Remove user successfully!");
+		}else{
+			System.out.println("Remove user failed. Unknown reason.");
+		}
+		
+		return ifSucceed;
+	}
+
+	public User verify(String username, String password){
+		User user = findByUsername(username);
+		
+		if (user == null)
+			return null;
+		
+		if (! user.getPassword().equals(password))
+			return null;
+				
+		return user;
+	}
+	
+	private boolean add(User user){
+		return userSet.add(user);
+	}
+	
+	private boolean remove(User user){
+		return userSet.remove(user);
+	}
+	
+	private User findByUsername(String username) {
+		for (User user : userSet){
+			if (user.getUsername().equals(username)){
+				return user;
+			}
+		}
+		return null;
+	}
+	
+	public boolean updateScore(String username, int newScore){
+		User match = findByUsername(username);
+		
+		if (match == null){
+			System.out.println("Update score failed. No such user.");
+			return false;
+		}
+		
+		User substitute = match.copy();
+		substitute.setScore(newScore);
+		
+		boolean ifSucceed = replace(match, substitute);
+		if (ifSucceed){
+			System.out.println("Update score successfully!");
+		}else{
+			System.out.println("Update score failed. Unknown reason.");
+		}
+		
+		return ifSucceed;
+	}
+	
+public List<User> rtrRankList(){
+		
+		List<User> list = new ArrayList<User>();
+		for (User user : userSet){
+			list.add(user);
+		}
+		
+		System.out.println("sort:");
+		for (User user : list){
+			System.out.println(user.toString());
+		}
+		return list;
+	}
+	
+	public int getRanking(int score){
+		int ranking = 0;
+		for (User user : userSet){
+			ranking ++;
+			if (user.getScore() == score){
+				return ranking;
+			}
+		}
+		
+		return -1;
+	}
+	
+	private boolean replace(User old, User substitute){
+		boolean ifSucceed = remove(old);
+		
+		if (! ifSucceed){
+			System.out.println("Can't remove the original.");
+			return false;
+		}
+		
+		ifSucceed = userSet.add(substitute);
+		
+		if (! ifSucceed){
+			System.out.println("Can't add the substitute.");
+			return false;
+		}
+		
+		return true;
+	}
+	
+	private boolean readFileByLines(){
+		File inFile = new File(fileName);
+		try {
+			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(
+					new FileInputStream(fileName), "UTF-8"));
+			
+			String line="";
+	        
+			while ((line=bufferedReader.readLine())!=null) {
+	            String[] strList = line.split(" ");
+	            
+	            //debug 
+	            System.out.println(strList[0] + "~" + strList[1] + "~" + strList[2]);
+	            
+	            User user = new User(strList[0], strList[1]);
+	            userSet.add(user);
+	        }
+			
+			bufferedReader.close();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+        
+        return true;
+    }
+
+	
+	private boolean writeFileByLines(){
+		try {
+			BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(
+					new FileOutputStream(new File(fileName)), "UTF-8"));
+			
+			for (User user : userSet){
+				String userInfo = user.toString();
+				bufferedWriter.write(userInfo);
+			}
+			
+			bufferedWriter.close();
+		} catch (Exception e){
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+	
 }
 
 class Messenger extends Thread {
 	MessageQueue mq;
 	Desk[] desks;
+	Vector<SOCKET> SOCKETList;     //所有在线的人
 	UserManager userManager;
 	final int maxTable = 64;
 	
@@ -191,6 +447,7 @@ class Messenger extends Thread {
 		desks = new Desk[maxTable];
 		userManager = new UserManager();
 		userManager.loadFromFile();
+		SOCKETList = new Vector<SOCKET>();
 		for (int i = 0; i < maxTable; i++) {
 			desks[i] = null;
 		}
@@ -212,9 +469,30 @@ class Messenger extends Thread {
 					String[] splitStrings = content.split("~");
 					
 					if(splitStrings[0].equals("login")) {
-						System.out.println("server get login!!(client sent)");
-						_socket.os.println("loginreveived");
-						_socket.os.flush();
+						System.out.println("server get login info!");
+						User currentUser = userManager.verify(splitStrings[1], splitStrings[2]);
+						if (currentUser != null) {
+							_socket.os.println("loginreveived");
+							_socket.os.flush();
+							
+							System.out.println("通过验证,登录成功");
+							SOCKETList.add(_socket);
+							_socket.ID = currentUser.getUsername();
+							_socket.No = -1;
+							_socket.Grade = currentUser.getScore();
+							
+							int n = SOCKETList.size();
+							for (int i = 0; i < n; i++) {
+								SOCKET temp = (SOCKET)SOCKETList.get(i);
+								temp.os.println("newgamer~" + currentUser.getUsername() + "~" + currentUser.getScore());
+								temp.os.flush();
+							}
+						}
+						else {
+							_socket.os.println("loginrejected");
+							_socket.os.flush();
+							System.out.println("拒绝通过");
+						}
 					}
 					else if (splitStrings[0].equals("jointable")) {
 						//加入桌子，命令格式为 jointable~桌子编号
