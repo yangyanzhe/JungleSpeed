@@ -29,8 +29,10 @@ public class JungleSpeedClient {
 		
 		ClientThread clientThread = new ClientThread(this);
 		clientThread.start();
-		ClientOperation clientOperation = new ClientOperation(this);
-		clientOperation.start();
+		//ClientOperation clientOperation = new ClientOperation(this);
+		//clientOperation.start();
+		Client app = new Client(this);
+		app.run();
 	}
 	
 	public static void main(String[] args) {
@@ -100,6 +102,15 @@ class ClientThread extends Thread {
 				}
 				else if (splitStrings[0].equals("tie")) {
 					System.out.println("Tie!!");
+				}
+				else if (splitStrings[0].equals("newgamer")) {
+					//new gamer log in
+					String newUser = splitStrings[1];
+					int score = Integer.parseInt(splitStrings[2]);
+					
+				}
+				else if (splitStrings[0].equals("loginrejected")) {
+					System.out.println("登录失败！用户名或密码错误！");
 				}
 			} catch (Exception e) {
 				// TODO: handle exception
