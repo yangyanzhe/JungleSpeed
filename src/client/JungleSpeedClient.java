@@ -56,7 +56,7 @@ class ClientThread extends Thread {
 				String[] splitStrings = s.split("~");
 				
 				if (splitStrings[0].equals("loginreveived")) {
-					System.out.println("Server has received login info!!");
+					System.out.println("登录成功！");
 				}
 				else if (splitStrings[0].equals("jointablesuccess")){
 					System.out.println("Join Table Success!");
@@ -111,6 +111,12 @@ class ClientThread extends Thread {
 				}
 				else if (splitStrings[0].equals("loginrejected")) {
 					System.out.println("登录失败！用户名或密码错误！");
+				}
+				else if (splitStrings[0].equals("registersuccess")) {
+					System.out.println("注册成功");
+				}
+				else if (splitStrings[0].equals("registerfail")) {
+					System.out.println("注册失败");
 				}
 			} catch (Exception e) {
 				// TODO: handle exception

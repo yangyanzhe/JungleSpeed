@@ -91,7 +91,13 @@ public class RegisterDialog extends JDialog {
 			String password = new String(passwordField.getPassword());
 			String repassword = new String(repasswordField.getPassword());
 			// TODO: 判断注册是否成功
-
+			if (password.equals(repassword)) {
+				client.pClient.os.println("register~" + username + "~" + password);
+				client.pClient.os.flush();
+			}
+			else {
+				System.out.println("两次输入的密码不一致!");
+			}
 		}
 	}
 	

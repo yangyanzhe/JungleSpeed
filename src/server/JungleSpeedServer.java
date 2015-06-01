@@ -243,8 +243,6 @@ class UserManager{
 		boolean ifSucceed = readFileByLines();
 		if (! ifSucceed){
 			System.out.println("Load user info failed, please check " + fileName);
-		} else{
-			System.out.println("Load user info successfully!");
 		}
 	}
 	
@@ -398,7 +396,7 @@ public List<User> rtrRankList(){
 	            String[] strList = line.split(" ");
 	            
 	            //debug 
-	            System.out.println(strList[0] + "~" + strList[1] + "~" + strList[2]);
+	            //System.out.println(strList[0] + "~" + strList[1] + "~" + strList[2]);
 	            
 	            User user = new User(strList[0], strList[1]);
 	            userSet.add(user);
@@ -573,6 +571,22 @@ class Messenger extends Thread {
 						//grabresult~getall~接收牌的玩家
 						//grabresult~rejecttototem~抛弃牌的玩家
 						//grabresult~rejecttoother~抛弃牌的玩家~接收牌的玩家
+					}
+					else if (splitStrings[0].equals("register")) {
+						//注册命令格式为register~用户名~密码
+						boolean flag = false;
+						flag = userManager.add(splitStrings[1], splitStrings[2]);
+						if (flag) {
+							System.out.println("新用户" + splitStrings[1] + "注册成功！");
+							_socket.os.println("registersuccess");
+							_socket.os.flush();
+							userManager.outputToFile();
+						}
+						else {
+							System.out.println("用户" + splitStrings[1] + "注册失败！");
+							_socket.os.println("registerfail");
+							_socket.os.flush();
+						}
 					}
 				}
 			} catch (Exception e) {
