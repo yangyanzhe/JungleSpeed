@@ -23,20 +23,20 @@ public class JungleSpeedServer {
 	}
 }
 
-//-------------------SOCKETÀà£¬·â×°ÓÃ»§Socket¡¢ÆäÊäÈëÊä³öÁ÷¡¢Ïà¹ØĞÅÏ¢-----------
+//-------------------SOCKETç±»ï¼Œå°è£…ç”¨æˆ·Socketã€å…¶è¾“å…¥è¾“å‡ºæµã€ç›¸å…³ä¿¡æ¯-----------
 class SOCKET {
 	Socket socket;		//Socket
-	BufferedReader is;	//ÊäÈëÁ÷
-	PrintWriter os;		//Êä³öÁ÷
-	String ID;			//ÓÃ»§Ãû£¬ÊÇ¹Ø¼üÂë
-	int Head;			//ÓÃ»§Í·Ïñ
-	int Grade;			//ÓÃ»§»ı·Ö
-	int Rank;			//ÓÃ»§ÅÅÃû
-	int No;				//×ÀºÅ
+	BufferedReader is;	//è¾“å…¥æµ
+	PrintWriter os;		//è¾“å‡ºæµ
+	String ID;			//ç”¨æˆ·åï¼Œæ˜¯å…³é”®ç 
+	int Head;			//ç”¨æˆ·å¤´åƒ
+	int Grade;			//ç”¨æˆ·ç§¯åˆ†
+	int Rank;			//ç”¨æˆ·æ’å
+	int No;				//æ¡Œå·
 	
 	SOCKET(Socket socket) {
 		this.socket=socket;
-		No = -1;		//±íÊ¾»¹Ã»½ø×À×Ó
+		No = -1;		//è¡¨ç¤ºè¿˜æ²¡è¿›æ¡Œå­
 		try {
 			is=new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			os = new PrintWriter(socket.getOutputStream());
@@ -58,7 +58,7 @@ class Information {
 }
 
 class ClientListener extends Thread	{
-	//Ã¿Ò»¸öClientListenerÏß³Ì¸ºÔğ¼à¿ØÒ»¸ö¿Í»§Socket
+	//æ¯ä¸€ä¸ªClientListenerçº¿ç¨‹è´Ÿè´£ç›‘æ§ä¸€ä¸ªå®¢æˆ·Socket
 	SOCKET _socket;
 	Messenger messenger;
 	
@@ -80,7 +80,7 @@ class ClientListener extends Thread	{
 				messenger.mq.put(info);
 			}
 			catch(IOException e) {
-				System.out.println("Ò»¸öÓÃ»§¶ÏÏßÁË"+_socket.socket);
+				System.out.println("ä¸€ä¸ªç”¨æˆ·æ–­çº¿äº†"+_socket.socket);
 				Information info = new Information(_socket,"offli:");
 				messenger.mq.put(info);
 				this.stop();
@@ -90,7 +90,7 @@ class ClientListener extends Thread	{
 }
 
 class SocketListener extends Thread {
-	//¼àÌısocketÁ¬½ÓµÄÏß³Ì£¬¸ºÔğ²»¶Ï½ÓÈësocket
+	//ç›‘å¬socketè¿æ¥çš„çº¿ç¨‹ï¼Œè´Ÿè´£ä¸æ–­æ¥å…¥socket
 	ServerSocket server;
 	Messenger messenger;
 	
@@ -107,7 +107,7 @@ class SocketListener extends Thread {
 			catch(InterruptedException ie) {
 			}
 			try {
-				//½ÓÈëÒ»¸ösocketÁ¬½Ó
+				//æ¥å…¥ä¸€ä¸ªsocketè¿æ¥
 				Socket socket =server.accept();
 				SOCKET _socket = new SOCKET(socket);
 				(new ClientListener(_socket, messenger)).start();
@@ -120,7 +120,7 @@ class SocketListener extends Thread {
 }
 
 class MessageQueue extends Vector<Information>{
-	//ÏûÏ¢¶ÓÁĞ
+	//æ¶ˆæ¯é˜Ÿåˆ—
 	synchronized void put(Information info) {
 		addElement(info);
 		notify();
@@ -207,8 +207,8 @@ class Messenger extends Thread {
 				
 				Information info = mq.get();
 				if (info != null) {
-					SOCKET _socket = info._socket;	//·¢³ö¸ÃÏûÏ¢µÄSOCKET
-					String content = info.content;	//ÏûÏ¢ÄÚÈİ
+					SOCKET _socket = info._socket;	//å‘å‡ºè¯¥æ¶ˆæ¯çš„SOCKET
+					String content = info.content;	//æ¶ˆæ¯å†…å®¹
 					String[] splitStrings = content.split("~");
 					
 					if(splitStrings[0].equals("login")) {
@@ -217,7 +217,7 @@ class Messenger extends Thread {
 						_socket.os.flush();
 					}
 					else if (splitStrings[0].equals("jointable")) {
-						//¼ÓÈë×À×Ó£¬ÃüÁî¸ñÊ½Îª jointable~×À×Ó±àºÅ
+						//åŠ å…¥æ¡Œå­ï¼Œå‘½ä»¤æ ¼å¼ä¸º jointable~æ¡Œå­ç¼–å·
 						System.out.println("joining table...");
 						int tableNum = Integer.parseInt(splitStrings[1]);
 						if (desks[tableNum] == null) {
@@ -234,7 +234,7 @@ class Messenger extends Thread {
 						}
 					}
 					else if (splitStrings[0].equals("userready")) {
-						//ÓÃ»§µã»÷ÁË×¼±¸°´Å¥£¬½øÈë×¼±¸×´Ì¬£¬¸ñÊ½Îª userready~×À×Ó±àºÅ
+						//ç”¨æˆ·ç‚¹å‡»äº†å‡†å¤‡æŒ‰é’®ï¼Œè¿›å…¥å‡†å¤‡çŠ¶æ€ï¼Œæ ¼å¼ä¸º userready~æ¡Œå­ç¼–å·
 						int tableNum = Integer.parseInt(splitStrings[1]);
 						System.out.println("Set ready");
 						boolean flag = false;
@@ -278,23 +278,23 @@ class Messenger extends Thread {
 						}
 					}
 					else if (splitStrings[0].equals("grab")) {
-						//ÇÀ¶áÍ¼ÌÚ£¬¸ñÊ½Îª£ºgrab~×À×Ó±àºÅ
+						//æŠ¢å¤ºå›¾è…¾ï¼Œæ ¼å¼ä¸ºï¼šgrab~æ¡Œå­ç¼–å·
 						System.out.println("grabing...");
 						int tableNum = Integer.parseInt(splitStrings[1]);
 						int len = desks[tableNum].gamerNumber;
 						for (int i = 0; i < len; i++) {
 							if (desks[tableNum]._sockets[i] == _socket) {
-								//µÃµ½ÇÀ¶áÅĞ¶¨½á¹ûµÄº¯Êı
+								//å¾—åˆ°æŠ¢å¤ºåˆ¤å®šç»“æœçš„å‡½æ•°
 								desks[tableNum].actionRob(i);
 								break;
 							}
 						}
-						//°ÑËùÓĞ½á¹û·¢¸øËùÓĞ¿Í»§¶Ë
-						//·¢¸ø¿Í»§¶ËµÄ½á¹û¸ñÊ½Îª£ºgrabresult~½á¹û
-						//½á¹ûÀàĞÍÓĞgetall(°üÀ¨Í¼ÌÚÏÂµÄ) rejecttototem rejecttoother
-						//grabresult~getall~½ÓÊÕÅÆµÄÍæ¼Ò
-						//grabresult~rejecttototem~Å×ÆúÅÆµÄÍæ¼Ò
-						//grabresult~rejecttoother~Å×ÆúÅÆµÄÍæ¼Ò~½ÓÊÕÅÆµÄÍæ¼Ò
+						//æŠŠæ‰€æœ‰ç»“æœå‘ç»™æ‰€æœ‰å®¢æˆ·ç«¯
+						//å‘ç»™å®¢æˆ·ç«¯çš„ç»“æœæ ¼å¼ä¸ºï¼šgrabresult~ç»“æœ
+						//ç»“æœç±»å‹æœ‰getall(åŒ…æ‹¬å›¾è…¾ä¸‹çš„) rejecttototem rejecttoother
+						//grabresult~getall~æ¥æ”¶ç‰Œçš„ç©å®¶
+						//grabresult~rejecttototem~æŠ›å¼ƒç‰Œçš„ç©å®¶
+						//grabresult~rejecttoother~æŠ›å¼ƒç‰Œçš„ç©å®¶~æ¥æ”¶ç‰Œçš„ç©å®¶
 					}
 				}
 			} catch (Exception e) {

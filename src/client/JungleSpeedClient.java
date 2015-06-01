@@ -24,7 +24,7 @@ public class JungleSpeedClient {
 			is = new BufferedReader(new InputStreamReader(socket.getInputStream()));	
 		}
 		catch(Exception e) {
-			System.out.println("ĞÂ½¨SocketÊ§°Ü£¡");
+			System.out.println("æ–°å»ºSocketå¤±è´¥ï¼");
 		}
 		
 		ClientThread clientThread = new ClientThread(this);
@@ -39,7 +39,7 @@ public class JungleSpeedClient {
 }
 
 class ClientThread extends Thread {
-	//¿Í»§»úÏß³Ì£¬ÓÃÀ´½ÓÊÕ·şÎñ»ú·¢ËÍ¹ıÀ´µÄÏûÏ¢
+	//å®¢æˆ·æœºçº¿ç¨‹ï¼Œç”¨æ¥æ¥æ”¶æœåŠ¡æœºå‘é€è¿‡æ¥çš„æ¶ˆæ¯
 	JungleSpeedClient pClient;
 	
 	public ClientThread(JungleSpeedClient pClient) {
@@ -72,27 +72,27 @@ class ClientThread extends Thread {
 					System.out.println("Game Start!");
 				}
 				else if (splitStrings[0].equals("turncard")) {
-					//·­ÅÆ£¬¸ñÊ½Îª£º turncard~Íæ¼Ò±àºÅ~ÅÆµÄ±àºÅ
+					//ç¿»ç‰Œï¼Œæ ¼å¼ä¸ºï¼š turncard~ç©å®¶ç¼–å·~ç‰Œçš„ç¼–å·
 					int playerNum = Integer.parseInt(splitStrings[1]);
 					int cardNum = Integer.parseInt(splitStrings[2]);
 					System.out.println("player " + playerNum + " turned card " + cardNum);
 				}
 				else if (splitStrings[0].equals("grabresult")) {
-					//grabresult~getall~½ÓÊÕÅÆµÄÍæ¼Ò
-					//grabresult~rejecttototem~Å×ÆúÅÆµÄÍæ¼Ò
-					//grabresult~rejecttoother~Å×ÆúÅÆµÄÍæ¼Ò~½ÓÊÕÅÆµÄÍæ¼Ò
+					//grabresult~getall~æ¥æ”¶ç‰Œçš„ç©å®¶
+					//grabresult~rejecttototem~æŠ›å¼ƒç‰Œçš„ç©å®¶
+					//grabresult~rejecttoother~æŠ›å¼ƒç‰Œçš„ç©å®¶~æ¥æ”¶ç‰Œçš„ç©å®¶
 					if (splitStrings[1].equals("getall")) {
 						int receiver = Integer.parseInt(splitStrings[2]);
-						System.out.println("Íæ¼Ò" + receiver + "µÃµ½ÁËËùÓĞµÄÅÆ£¡");
+						System.out.println("ç©å®¶" + receiver + "å¾—åˆ°äº†æ‰€æœ‰çš„ç‰Œï¼");
 					}
 					else if (splitStrings[1].equals("rejecttototem")) {
 						int giver = Integer.parseInt(splitStrings[2]);
-						System.out.println("Íæ¼Ò" + giver + "°Ñ×Ô¼º·­¿ªµÄÅÆ·ÅÔÚÁËÍ¼ÌÚÏÂÃæ£¡");
+						System.out.println("ç©å®¶" + giver + "æŠŠè‡ªå·±ç¿»å¼€çš„ç‰Œæ”¾åœ¨äº†å›¾è…¾ä¸‹é¢ï¼");
 					}
 					else if (splitStrings[1].equals("rejecttoother")) {
 						int giver = Integer.parseInt(splitStrings[2]);
 						int receiver = Integer.parseInt(splitStrings[3]);
-						System.out.println("Íæ¼Ò" + giver + "°Ñ×Ô¼º·­¿ªµÄÅÆ¸øÁËÍæ¼Ò" + receiver + "!");
+						System.out.println("ç©å®¶" + giver + "æŠŠè‡ªå·±ç¿»å¼€çš„ç‰Œç»™äº†ç©å®¶" + receiver + "!");
 					}
 				}
 				else if (splitStrings[0].equals("grabresult")) {
