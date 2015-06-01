@@ -3,8 +3,6 @@ package client;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.FlowLayout;
-import java.awt.Frame;
-import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -15,10 +13,9 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-import client.LoginDialog.RegisterListener;
-
 @SuppressWarnings("serial")
 public class RegisterDialog extends JDialog {
+	Client client;
 	static int defaultW = 200;
 	static int defaultH = 210;
 	
@@ -35,8 +32,9 @@ public class RegisterDialog extends JDialog {
 	
 	LoginDialog loginDialog;
 	
-	public RegisterDialog(Frame f) {
+	public RegisterDialog(Client f) {
 		super(f, "注册", true);
+		client = f;
 		init();
 	}
 	
@@ -87,10 +85,6 @@ public class RegisterDialog extends JDialog {
 					(Client.defaultH-RegisterDialog.defaultH)/2);
 	}
 	
-	public void setLoginDialog(LoginDialog d) {
-		loginDialog = d;
-	}
-	
 	class RegisterListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			String username = usernameField.getText();
@@ -104,7 +98,7 @@ public class RegisterDialog extends JDialog {
 	class LoginListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			setVisible(false);
-			loginDialog.setVisible(true);
+			client.loginDialog.setVisible(true);
 		}
 	}
 }

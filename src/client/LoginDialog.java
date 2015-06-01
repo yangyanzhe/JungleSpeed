@@ -3,8 +3,6 @@ package client;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.FlowLayout;
-import java.awt.Frame;
-import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -17,6 +15,7 @@ import javax.swing.JTextField;
 
 @SuppressWarnings("serial")
 public class LoginDialog extends JDialog {
+	Client client;
 	static int defaultW = 200;
 	static int defaultH = 170;
 	
@@ -31,8 +30,9 @@ public class LoginDialog extends JDialog {
 	
 	RegisterDialog registerDialog;
 	
-	public LoginDialog(Frame f) {
+	public LoginDialog(Client f) {
 		super(f, "登陆", true);
+		client = f;
 		init();
 	}
 	
@@ -76,10 +76,6 @@ public class LoginDialog extends JDialog {
 					(Client.defaultH-LoginDialog.defaultH)/2);
 	}
 	
-	public void setRegisterDialog(RegisterDialog d) {
-		registerDialog = d;
-	}
-	
 	class LoginListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			String username = usernameField.getText();
@@ -92,7 +88,7 @@ public class LoginDialog extends JDialog {
 	class RegisterListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			setVisible(false);
-			registerDialog.setVisible(true);
+			client.registerDialog.setVisible(true);
 		}
 	}
 }
