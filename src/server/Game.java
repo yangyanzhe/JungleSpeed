@@ -33,12 +33,13 @@ public class Game {
 	boolean startFromTimer1 = false;
 	boolean startFromTimer2 = false;
 	boolean end = false;
+	boolean grab = false;
 	
 	Gamer[] gamers;							// player
 	Timer timer1;
 	Timer timer2;
-	int countDefine = 3;	// 5
-	volatile int count = 3;					// delay for 5s
+	int countDefine;	// 5
+	volatile int count;					// delay for 5s
 	
 	int punishedGuy;						// player who will be punished after a rob action
 	
@@ -80,6 +81,16 @@ public class Game {
 		nextGamer = 0;
 		totemCardsNumber = 0;
 		winnerNumber = 0;
+		
+		grab = false;
+		robFlag = false;				// actionFlag
+		startFromTimer1 = false;
+		startFromTimer2 = false;
+		end = false;
+		grab = false;
+		
+		countDefine = 3;
+		count = 3;
 		
 		punishedGuy = -1;
 		for(int i = 0; i<8; i++){
@@ -129,6 +140,7 @@ public class Game {
 		
 		currentMode = nextMode;
 		nextMode = 0;
+		grab = false;
 		
 		if(currentMode != 1){
 			while(winnerList[currentGamer] > 0){
@@ -317,9 +329,16 @@ public class Game {
 	}
 	
 	public void actionRob(int gamerId){
-		//grabresult~getall~接收牌的玩家
-		//grabresult~rejecttototem~抛弃牌的玩家
-		//grabresult~rejecttoother~抛弃牌的玩家~接收牌的玩家
+		
+		/* grabresult~getall~接收牌的玩家
+		 * grabresult~rejecttototem~抛弃牌的玩家
+		 * grabresult~rejecttoother~抛弃牌的玩家~接收牌的玩家 */
+		
+		if(grab){
+			return;
+		}
+		grab = true;
+		
 		nextGamer = gamerId;
 		System.out.println("玩家"+gamerId+"抢到了图腾");
 		if(startFromTimer1){
