@@ -33,13 +33,12 @@ public class Game {
 	boolean startFromTimer1 = false;
 	boolean startFromTimer2 = false;
 	boolean end = false;
-	boolean grab = false;
 	
 	Gamer[] gamers;							// player
 	Timer timer1;
 	Timer timer2;
-	int countDefine;	// 5
-	volatile int count;					// delay for 5s
+	int countDefine = 3;	// 5
+	volatile int count = 3;					// delay for 5s
 	
 	int punishedGuy;						// player who will be punished after a rob action
 	
@@ -81,16 +80,6 @@ public class Game {
 		nextGamer = 0;
 		totemCardsNumber = 0;
 		winnerNumber = 0;
-		
-		grab = false;
-		robFlag = false;				// actionFlag
-		startFromTimer1 = false;
-		startFromTimer2 = false;
-		end = false;
-		grab = false;
-		
-		countDefine = 3;
-		count = 3;
 		
 		punishedGuy = -1;
 		for(int i = 0; i<8; i++){
@@ -140,7 +129,6 @@ public class Game {
 		
 		currentMode = nextMode;
 		nextMode = 0;
-		grab = false;
 		
 		if(currentMode != 1){
 			while(winnerList[currentGamer] > 0){
@@ -329,22 +317,9 @@ public class Game {
 	}
 	
 	public void actionRob(int gamerId){
-<<<<<<< HEAD
-		
-		/* grabresult~getall~½ÓÊÕÅÆµÄÍæ¼Ò
-		 * grabresult~rejecttototem~Å×ÆúÅÆµÄÍæ¼Ò
-		 * grabresult~rejecttoother~Å×ÆúÅÆµÄÍæ¼Ò~½ÓÊÕÅÆµÄÍæ¼Ò */
-		
-		if(grab){
-			return;
-		}
-		grab = true;
-		
-=======
 		//grabresult~getall~æŽ¥æ”¶ç‰Œçš„çŽ©å®¶
 		//grabresult~rejecttototem~æŠ›å¼ƒç‰Œçš„çŽ©å®¶
 		//grabresult~rejecttoother~æŠ›å¼ƒç‰Œçš„çŽ©å®¶~æŽ¥æ”¶ç‰Œçš„çŽ©å®¶
->>>>>>> 86cbdc48a49a571ec762874d573f59a674ae5a6b
 		nextGamer = gamerId;
 		System.out.println("çŽ©å®¶"+gamerId+"æŠ¢åˆ°äº†å›¾è…¾");
 		if(startFromTimer1){
