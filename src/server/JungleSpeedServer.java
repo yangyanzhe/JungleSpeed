@@ -1,13 +1,24 @@
 package server;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.TreeSet;
 import java.util.Vector;
 
 import javax.xml.stream.events.EndDocument;
@@ -23,20 +34,19 @@ public class JungleSpeedServer {
 	}
 }
 
-//-------------------SOCKETÀà£¬·â×°ÓÃ»§Socket¡¢ÆäÊäÈëÊä³öÁ÷¡¢Ïà¹ØĞÅÏ¢-----------
+//-------------------SOCKETç±»ï¼Œå°è£…ç”¨æˆ·Socketã€å…¶è¾“å…¥è¾“å‡ºæµã€ç›¸å…³ä¿¡æ¯-----------
 class SOCKET {
 	Socket socket;		//Socket
-	BufferedReader is;	//ÊäÈëÁ÷
-	PrintWriter os;		//Êä³öÁ÷
-	String ID;			//ÓÃ»§Ãû£¬ÊÇ¹Ø¼üÂë
-	int Head;			//ÓÃ»§Í·Ïñ
-	int Grade;			//ÓÃ»§»ı·Ö
-	int Rank;			//ÓÃ»§ÅÅÃû
-	int No;				//×ÀºÅ
+	BufferedReader is;	//è¾“å…¥æµ
+	PrintWriter os;		//è¾“å‡ºæµ
+	String ID;			//ç”¨æˆ·åï¼Œæ˜¯å…³é”®ç 
+	int Grade;			//ç”¨æˆ·ç§¯åˆ†
+	int Rank;			//ç”¨æˆ·æ’å
+	int No;				//æ¡Œå·
 	
 	SOCKET(Socket socket) {
 		this.socket=socket;
-		No = -1;		//±íÊ¾»¹Ã»½ø×À×Ó
+		No = -1;		//è¡¨ç¤ºè¿˜æ²¡è¿›æ¡Œå­
 		try {
 			is=new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			os = new PrintWriter(socket.getOutputStream());
@@ -58,7 +68,7 @@ class Information {
 }
 
 class ClientListener extends Thread	{
-	//Ã¿Ò»¸öClientListenerÏß³Ì¸ºÔğ¼à¿ØÒ»¸ö¿Í»§Socket
+	//æ¯ä¸€ä¸ªClientListenerçº¿ç¨‹è´Ÿè´£ç›‘æ§ä¸€ä¸ªå®¢æˆ·Socket
 	SOCKET _socket;
 	Messenger messenger;
 	
@@ -80,7 +90,7 @@ class ClientListener extends Thread	{
 				messenger.mq.put(info);
 			}
 			catch(IOException e) {
-				System.out.println("Ò»¸öÓÃ»§¶ÏÏßÁË"+_socket.socket);
+				System.out.println("ä¸€ä¸ªç”¨æˆ·æ–­çº¿äº†"+_socket.socket);
 				Information info = new Information(_socket,"offli:");
 				messenger.mq.put(info);
 				this.stop();
@@ -90,7 +100,7 @@ class ClientListener extends Thread	{
 }
 
 class SocketListener extends Thread {
-	//¼àÌısocketÁ¬½ÓµÄÏß³Ì£¬¸ºÔğ²»¶Ï½ÓÈësocket
+	//ç›‘å¬socketè¿æ¥çš„çº¿ç¨‹ï¼Œè´Ÿè´£ä¸æ–­æ¥å…¥socket
 	ServerSocket server;
 	Messenger messenger;
 	
@@ -107,7 +117,7 @@ class SocketListener extends Thread {
 			catch(InterruptedException ie) {
 			}
 			try {
-				//½ÓÈëÒ»¸ösocketÁ¬½Ó
+				//æ¥å…¥ä¸€ä¸ªsocketè¿æ¥
 				Socket socket =server.accept();
 				SOCKET _socket = new SOCKET(socket);
 				(new ClientListener(_socket, messenger)).start();
@@ -120,7 +130,7 @@ class SocketListener extends Thread {
 }
 
 class MessageQueue extends Vector<Information>{
-	//ÏûÏ¢¶ÓÁĞ
+	//æ¶ˆæ¯é˜Ÿåˆ—
 	synchronized void put(Information info) {
 		addElement(info);
 		notify();
@@ -170,19 +180,263 @@ class Desk extends Game {
 	}
 }
 
-class UserManager {
-	public void loadFromFile() {
-		
+class User {
+	private String username;
+	private String password;
+	private int score = 0;
+	
+	public User(String username, String password) {
+		// TODO Auto-generated constructor stub
+		this.username = username;
+		this.password = password;
+		this.score = 0;
 	}
 	
-	public void outputToFile() {
-		
+	public String getUsername() {
+		return this.username;
 	}
+	
+	public String getPassword() {
+		return this.password;
+	}
+	
+	public int getScore() {
+		return this.score;
+	}
+	
+	public String toString(){
+		return username + " " + password + " " + " " + score + "\n";
+	}
+	
+	public void setScore(int s) {
+		this.score = s;
+	}
+	
+	public User copy() {
+		User r = new User(username, password);
+		r.setScore(score);
+		return r;
+	}
+}
+
+class UserManager{
+	private static final String fileName = "userdb.txt";
+	
+	private Set<User> userSet;
+	public UserManager(){
+		userSet = new TreeSet<User>(new Comparator<User>() {
+			@Override
+			public int compare(User a, User b) {
+				if (a.getScore() == b.getScore()){
+					return a.getUsername().compareTo(b.getUsername());
+				}
+				
+				if (a.getScore() > b.getScore()){
+					return 1;
+				}
+				return -1;
+			}
+		});
+	}
+	
+	public void loadFromFile() {
+		boolean ifSucceed = readFileByLines();
+		if (! ifSucceed){
+			System.out.println("Load user info failed, please check " + fileName);
+		}
+	}
+	
+	public void outputToFile(){
+		boolean ifSucceed = writeFileByLines();
+		if (! ifSucceed){
+			System.out.println("Output user info failed, please check " + fileName);
+		} else{
+			System.out.println("Output user info successfully!");
+		}
+	}
+	
+	public boolean add(String username, String password){
+		User ifExist = findByUsername(username);
+		if (ifExist != null){
+			System.out.println("Add new user failed. Username has existed.");
+			return false;
+		}
+			
+		User user = new User(username, password);
+		boolean ifSucceed = add(user);
+		if (! ifSucceed){
+			System.out.println("Add new user failed. Unknown reason.");
+			return false;
+		} else{
+			System.out.println("Add new user successfully!");
+			return true;
+		}
+	}
+	public boolean remove(String username, String password){
+		User match = verify(username, password);
+		
+		if (match == null){
+			System.out.println("Remove user failed. Wrong username or password.");
+			return false;
+		}
+			
+		boolean ifSucceed = remove(match);
+		if (ifSucceed){
+			System.out.println("Remove user successfully!");
+		}else{
+			System.out.println("Remove user failed. Unknown reason.");
+		}
+		
+		return ifSucceed;
+	}
+
+	public User verify(String username, String password){
+		User user = findByUsername(username);
+		
+		if (user == null)
+			return null;
+		
+		if (! user.getPassword().equals(password))
+			return null;
+				
+		return user;
+	}
+	
+	private boolean add(User user){
+		return userSet.add(user);
+	}
+	
+	private boolean remove(User user){
+		return userSet.remove(user);
+	}
+	
+	private User findByUsername(String username) {
+		for (User user : userSet){
+			if (user.getUsername().equals(username)){
+				return user;
+			}
+		}
+		return null;
+	}
+	
+	public boolean updateScore(String username, int newScore){
+		User match = findByUsername(username);
+		
+		if (match == null){
+			System.out.println("Update score failed. No such user.");
+			return false;
+		}
+		
+		User substitute = match.copy();
+		substitute.setScore(newScore);
+		
+		boolean ifSucceed = replace(match, substitute);
+		if (ifSucceed){
+			System.out.println("Update score successfully!");
+		}else{
+			System.out.println("Update score failed. Unknown reason.");
+		}
+		
+		return ifSucceed;
+	}
+	
+public List<User> rtrRankList(){
+		
+		List<User> list = new ArrayList<User>();
+		for (User user : userSet){
+			list.add(user);
+		}
+		
+		System.out.println("sort:");
+		for (User user : list){
+			System.out.println(user.toString());
+		}
+		return list;
+	}
+	
+	public int getRanking(int score){
+		int ranking = 0;
+		for (User user : userSet){
+			ranking ++;
+			if (user.getScore() == score){
+				return ranking;
+			}
+		}
+		
+		return -1;
+	}
+	
+	private boolean replace(User old, User substitute){
+		boolean ifSucceed = remove(old);
+		
+		if (! ifSucceed){
+			System.out.println("Can't remove the original.");
+			return false;
+		}
+		
+		ifSucceed = userSet.add(substitute);
+		
+		if (! ifSucceed){
+			System.out.println("Can't add the substitute.");
+			return false;
+		}
+		
+		return true;
+	}
+	
+	private boolean readFileByLines(){
+		File inFile = new File(fileName);
+		try {
+			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(
+					new FileInputStream(fileName), "UTF-8"));
+			
+			String line="";
+	        
+			while ((line=bufferedReader.readLine())!=null) {
+	            String[] strList = line.split(" ");
+	            
+	            //debug 
+	            //System.out.println(strList[0] + "~" + strList[1] + "~" + strList[2]);
+	            
+	            User user = new User(strList[0], strList[1]);
+	            userSet.add(user);
+	        }
+			
+			bufferedReader.close();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+        
+        return true;
+    }
+
+	
+	private boolean writeFileByLines(){
+		try {
+			BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(
+					new FileOutputStream(new File(fileName)), "UTF-8"));
+			
+			for (User user : userSet){
+				String userInfo = user.toString();
+				bufferedWriter.write(userInfo);
+			}
+			
+			bufferedWriter.close();
+		} catch (Exception e){
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+	
 }
 
 class Messenger extends Thread {
 	MessageQueue mq;
 	Desk[] desks;
+	Vector<SOCKET> SOCKETList;     //æ‰€æœ‰åœ¨çº¿çš„äºº
 	UserManager userManager;
 	final int maxTable = 64;
 	
@@ -191,6 +445,7 @@ class Messenger extends Thread {
 		desks = new Desk[maxTable];
 		userManager = new UserManager();
 		userManager.loadFromFile();
+		SOCKETList = new Vector<SOCKET>();
 		for (int i = 0; i < maxTable; i++) {
 			desks[i] = null;
 		}
@@ -207,17 +462,38 @@ class Messenger extends Thread {
 				
 				Information info = mq.get();
 				if (info != null) {
-					SOCKET _socket = info._socket;	//·¢³ö¸ÃÏûÏ¢µÄSOCKET
-					String content = info.content;	//ÏûÏ¢ÄÚÈİ
+					SOCKET _socket = info._socket;	//å‘å‡ºè¯¥æ¶ˆæ¯çš„SOCKET
+					String content = info.content;	//æ¶ˆæ¯å†…å®¹
 					String[] splitStrings = content.split("~");
 					
 					if(splitStrings[0].equals("login")) {
-						System.out.println("server get login!!(client sent)");
-						_socket.os.println("loginreveived");
-						_socket.os.flush();
+						System.out.println("server get login info!");
+						User currentUser = userManager.verify(splitStrings[1], splitStrings[2]);
+						if (currentUser != null) {
+							_socket.os.println("loginreveived");
+							_socket.os.flush();
+							
+							System.out.println("é€šè¿‡éªŒè¯,ç™»å½•æˆåŠŸ");
+							SOCKETList.add(_socket);
+							_socket.ID = currentUser.getUsername();
+							_socket.No = -1;
+							_socket.Grade = currentUser.getScore();
+							
+							int n = SOCKETList.size();
+							for (int i = 0; i < n; i++) {
+								SOCKET temp = (SOCKET)SOCKETList.get(i);
+								temp.os.println("newgamer~" + currentUser.getUsername() + "~" + currentUser.getScore());
+								temp.os.flush();
+							}
+						}
+						else {
+							_socket.os.println("loginrejected");
+							_socket.os.flush();
+							System.out.println("æ‹’ç»é€šè¿‡");
+						}
 					}
 					else if (splitStrings[0].equals("jointable")) {
-						//¼ÓÈë×À×Ó£¬ÃüÁî¸ñÊ½Îª jointable~×À×Ó±àºÅ
+						//åŠ å…¥æ¡Œå­ï¼Œå‘½ä»¤æ ¼å¼ä¸º jointable~æ¡Œå­ç¼–å·
 						System.out.println("joining table...");
 						int tableNum = Integer.parseInt(splitStrings[1]);
 						if (desks[tableNum] == null) {
@@ -234,7 +510,7 @@ class Messenger extends Thread {
 						}
 					}
 					else if (splitStrings[0].equals("userready")) {
-						//ÓÃ»§µã»÷ÁË×¼±¸°´Å¥£¬½øÈë×¼±¸×´Ì¬£¬¸ñÊ½Îª userready~×À×Ó±àºÅ
+						//ç”¨æˆ·ç‚¹å‡»äº†å‡†å¤‡æŒ‰é’®ï¼Œè¿›å…¥å‡†å¤‡çŠ¶æ€ï¼Œæ ¼å¼ä¸º userready~æ¡Œå­ç¼–å·
 						int tableNum = Integer.parseInt(splitStrings[1]);
 						System.out.println("Set ready");
 						boolean flag = false;
@@ -278,23 +554,39 @@ class Messenger extends Thread {
 						}
 					}
 					else if (splitStrings[0].equals("grab")) {
-						//ÇÀ¶áÍ¼ÌÚ£¬¸ñÊ½Îª£ºgrab~×À×Ó±àºÅ
+						//æŠ¢å¤ºå›¾è…¾ï¼Œæ ¼å¼ä¸ºï¼šgrab~æ¡Œå­ç¼–å·
 						System.out.println("grabing...");
 						int tableNum = Integer.parseInt(splitStrings[1]);
 						int len = desks[tableNum].gamerNumber;
 						for (int i = 0; i < len; i++) {
 							if (desks[tableNum]._sockets[i] == _socket) {
-								//µÃµ½ÇÀ¶áÅĞ¶¨½á¹ûµÄº¯Êı
+								//å¾—åˆ°æŠ¢å¤ºåˆ¤å®šç»“æœçš„å‡½æ•°
 								desks[tableNum].actionRob(i);
 								break;
 							}
 						}
-						//°ÑËùÓĞ½á¹û·¢¸øËùÓĞ¿Í»§¶Ë
-						//·¢¸ø¿Í»§¶ËµÄ½á¹û¸ñÊ½Îª£ºgrabresult~½á¹û
-						//½á¹ûÀàĞÍÓĞgetall(°üÀ¨Í¼ÌÚÏÂµÄ) rejecttototem rejecttoother
-						//grabresult~getall~½ÓÊÕÅÆµÄÍæ¼Ò
-						//grabresult~rejecttototem~Å×ÆúÅÆµÄÍæ¼Ò
-						//grabresult~rejecttoother~Å×ÆúÅÆµÄÍæ¼Ò~½ÓÊÕÅÆµÄÍæ¼Ò
+						//æŠŠæ‰€æœ‰ç»“æœå‘ç»™æ‰€æœ‰å®¢æˆ·ç«¯
+						//å‘ç»™å®¢æˆ·ç«¯çš„ç»“æœæ ¼å¼ä¸ºï¼šgrabresult~ç»“æœ
+						//ç»“æœç±»å‹æœ‰getall(åŒ…æ‹¬å›¾è…¾ä¸‹çš„) rejecttototem rejecttoother
+						//grabresult~getall~æ¥æ”¶ç‰Œçš„ç©å®¶
+						//grabresult~rejecttototem~æŠ›å¼ƒç‰Œçš„ç©å®¶
+						//grabresult~rejecttoother~æŠ›å¼ƒç‰Œçš„ç©å®¶~æ¥æ”¶ç‰Œçš„ç©å®¶
+					}
+					else if (splitStrings[0].equals("register")) {
+						//æ³¨å†Œå‘½ä»¤æ ¼å¼ä¸ºregister~ç”¨æˆ·å~å¯†ç 
+						boolean flag = false;
+						flag = userManager.add(splitStrings[1], splitStrings[2]);
+						if (flag) {
+							System.out.println("æ–°ç”¨æˆ·" + splitStrings[1] + "æ³¨å†ŒæˆåŠŸï¼");
+							_socket.os.println("registersuccess");
+							_socket.os.flush();
+							userManager.outputToFile();
+						}
+						else {
+							System.out.println("ç”¨æˆ·" + splitStrings[1] + "æ³¨å†Œå¤±è´¥ï¼");
+							_socket.os.println("registerfail");
+							_socket.os.flush();
+						}
 					}
 				}
 			} catch (Exception e) {
@@ -335,7 +627,7 @@ class Server{
 			@Override  
             public void run() {  
                 messenger.end();
-            }  
+            }
 		});
 	}
 }

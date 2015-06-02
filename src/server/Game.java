@@ -19,8 +19,8 @@ public class Game {
 	int currentGamer;						// record the gamer who turn cards
 	int nextGamer;
 	
-	int currentMode;						// mode=0£¬Õı³££»mode=1, Ò»Æğ·­ÅÆ£»
-											// mode=2£¬Ò»ÆğÇÀ£»mode=3£¬±äÉ«; mode=4, Ò»ÆğÇÀÇÒÎªgamerµÄ×îºóÒ»ÕÂ£¬ÌØÅĞ
+	int currentMode;						// mode=0ï¼Œæ­£å¸¸ï¼›mode=1, ä¸€èµ·ç¿»ç‰Œï¼›
+											// mode=2ï¼Œä¸€èµ·æŠ¢ï¼›mode=3ï¼Œå˜è‰²; mode=4, ä¸€èµ·æŠ¢ä¸”ä¸ºgamerçš„æœ€åä¸€ç« ï¼Œç‰¹åˆ¤
 	int nextMode;
 	
 	int   totemCardsNumber;					// number of cards under totem
@@ -153,7 +153,7 @@ public class Game {
 				currentCard = gamers[currentGamer].turnCard();
 				k--;
 				if(k == 0){
-					System.out.println("ºÍ¾Ö");
+					System.out.println("å’Œå±€");
 					end = true;
 					
 					for (int i = 0; i < gamerNumber; i++) {
@@ -165,25 +165,25 @@ public class Game {
 				}
 			}
 			
-			System.out.println("Íæ¼Ò"+currentGamer+"·­³öµÄÅÆÎª£º"+currentCard);
+			System.out.println("ç©å®¶"+currentGamer+"ç¿»å‡ºçš„ç‰Œä¸ºï¼š"+currentCard);
 			nextGamer = (currentGamer+1) % gamerNumber;
 			
 			if(currentCard < 3){
-				nextMode = 1;					// ÏÂÂÖ´ó¼ÒÒ»Æğ·­ÅÆ
+				nextMode = 1;					// ä¸‹è½®å¤§å®¶ä¸€èµ·ç¿»ç‰Œ
 			}
 			else if(currentCard < 6){
 				if(gamers[currentGamer].downHead == gamers[currentGamer].downTail){
 					currentMode = 4;
 				}
 				else{
-					currentMode = 2;				// ÕâÂÖ´ó¼ÒÒ»ÆğÇÀ
+					currentMode = 2;				// è¿™è½®å¤§å®¶ä¸€èµ·æŠ¢
 				}
 			}
 			else if(currentCard < 8){
-				nextMode = 3;					// ÏÂÂÖ¿ªÊ¼°´ÑÕÉ«È¡Í¬
+				nextMode = 3;					// ä¸‹è½®å¼€å§‹æŒ‰é¢œè‰²å–åŒ
 			}
 			else {
-				currentMode = 0;				// Õı³£
+				currentMode = 0;				// æ­£å¸¸
 			}
 			
 			if((currentCard < 3 || (5 < currentCard && currentCard < 8)) &&
@@ -193,7 +193,7 @@ public class Game {
 				winnerList[currentGamer] = winnerNumber;
 			}
 			
-			//Ïò¿Í»§¶ËËµ±ğÈË·­µÄÅÆ£¬¸ñÊ½Îª turncard~×À×ÓºÅ~Íæ¼Ò±àºÅ~ÅÆµÄ±àºÅ
+			//å‘å®¢æˆ·ç«¯è¯´åˆ«äººç¿»çš„ç‰Œï¼Œæ ¼å¼ä¸º turncard~æ¡Œå­å·~ç©å®¶ç¼–å·~ç‰Œçš„ç¼–å·
 			for (int i = 0; i < gamerNumber; i++) {
 				_sockets[i].os.println("turncard~" + currentGamer + "~" + currentCard);
 				_sockets[i].os.flush();
@@ -214,20 +214,20 @@ public class Game {
 				}
 				
 				empty = false;
-				System.out.println("Íæ¼Ò"+i+"·­³öµÄÅÆÎª£º"+currentCard);
-				//Ïò¿Í»§¶ËËµ±ğÈË·­µÄÅÆ£¬¸ñÊ½Îª turncard~×À×ÓºÅ~Íæ¼Ò±àºÅ~ÅÆµÄ±àºÅ
+				System.out.println("ç©å®¶"+i+"ç¿»å‡ºçš„ç‰Œä¸ºï¼š"+currentCard);
+				//å‘å®¢æˆ·ç«¯è¯´åˆ«äººç¿»çš„ç‰Œï¼Œæ ¼å¼ä¸º turncard~æ¡Œå­å·~ç©å®¶ç¼–å·~ç‰Œçš„ç¼–å·
 				for (int j = 0; j < gamerNumber; j++) {
 					_sockets[j].os.println("turncard~" + i + "~" + currentCard);
 					_sockets[j].os.flush();
 				}
 				
 				if(currentCard < 3){
-					nextMode = 1;					// ÏÂÂÖ´ó¼ÒÒ»Æğ·­ÅÆ
+					nextMode = 1;					// ä¸‹è½®å¤§å®¶ä¸€èµ·ç¿»ç‰Œ
 					outerArrow = true;
 					functionCard = true;
 				}
 				else if(currentCard < 6){
-					currentMode = 2;				// ÕâÂÖ´ó¼ÒÒ»ÆğÇÀ
+					currentMode = 2;				// è¿™è½®å¤§å®¶ä¸€èµ·æŠ¢
 					functionCard = true;
 				}
 				else if((!outerArrow) && currentCard < 8){
@@ -238,7 +238,7 @@ public class Game {
 			
 			if(empty){					// end game
 				end = true;
-				System.out.println("ºÍ¾Ö");
+				System.out.println("å’Œå±€");
 			}
 			
 			if(!functionCard && !outerArrow){
@@ -263,7 +263,7 @@ public class Game {
 	}
 	
 	public boolean judgeRob(int gamerId){
-		/// ÌØÊâÇé¿ö  ///
+		/// ç‰¹æ®Šæƒ…å†µ  ///
 		if(currentMode == 2){
 			return true;		
 		}
@@ -283,7 +283,7 @@ public class Game {
 			return false;		// robs are not allowed 
 		}
 		
-		/// Õı³£¹æÔò   ///
+		/// æ­£å¸¸è§„åˆ™   ///
 		if(currentGamer == gamerId){
 			// find the punished guy
 			for(int i = 0; i<gamerNumber; i++){
@@ -329,6 +329,7 @@ public class Game {
 	}
 	
 	public void actionRob(int gamerId){
+<<<<<<< HEAD
 		
 		/* grabresult~getall~½ÓÊÕÅÆµÄÍæ¼Ò
 		 * grabresult~rejecttototem~Å×ÆúÅÆµÄÍæ¼Ò
@@ -339,8 +340,13 @@ public class Game {
 		}
 		grab = true;
 		
+=======
+		//grabresult~getall~æ¥æ”¶ç‰Œçš„ç©å®¶
+		//grabresult~rejecttototem~æŠ›å¼ƒç‰Œçš„ç©å®¶
+		//grabresult~rejecttoother~æŠ›å¼ƒç‰Œçš„ç©å®¶~æ¥æ”¶ç‰Œçš„ç©å®¶
+>>>>>>> 86cbdc48a49a571ec762874d573f59a674ae5a6b
 		nextGamer = gamerId;
-		System.out.println("Íæ¼Ò"+gamerId+"ÇÀµ½ÁËÍ¼ÌÚ");
+		System.out.println("ç©å®¶"+gamerId+"æŠ¢åˆ°äº†å›¾è…¾");
 		if(startFromTimer1){
 			timer2.cancel();
 		}
@@ -413,7 +419,7 @@ public class Game {
 		
 		selectWinner();
 		if(isEnd()){
-    		System.out.println("ÓÎÏ·½áÊø");
+    		System.out.println("æ¸¸æˆç»“æŸ");
     	}
 		else{
 			timerResume();
@@ -424,7 +430,7 @@ public class Game {
         public void run() {
         	startFromTimer1 = false;
         	startFromTimer2 = true;
-        	System.out.println("µ¹¼ÆÊ±£º " + count);
+        	System.out.println("å€’è®¡æ—¶ï¼š " + count);
     		count--;
     		
     		if (count == 0) {
@@ -432,7 +438,7 @@ public class Game {
             	
             	turnCard();
             	if(isEnd() || end){
-            		System.out.println("ÓÎÏ·½áÊø");
+            		System.out.println("æ¸¸æˆç»“æŸ");
             	}
             	else{
 	            	timer2 = new Timer(); 
@@ -446,7 +452,7 @@ public class Game {
 
     class Task2 extends TimerTask{
         public void run() {
-        	System.out.println("µ¹¼ÆÊ±£º " + count);
+        	System.out.println("å€’è®¡æ—¶ï¼š " + count);
     		count--;
     		startFromTimer2 = false;
     		startFromTimer1 = true;
@@ -458,7 +464,7 @@ public class Game {
             	turnCard();
             	
             	if(isEnd() || end){
-            		System.out.println("ÓÎÏ·½áÊø");
+            		System.out.println("æ¸¸æˆç»“æŸ");
             	}
             	else{
             		count = countDefine;
@@ -506,9 +512,9 @@ public class Game {
 			System.out.print("\n");
 		}
 		
-		System.out.println("ÅÆÒÑ¾­·Öµ½Íæ¼ÒÊÖÖĞ£¬¿ªÊ¼ÓÎÏ·£¡");
+		System.out.println("ç‰Œå·²ç»åˆ†åˆ°ç©å®¶æ‰‹ä¸­ï¼Œå¼€å§‹æ¸¸æˆï¼");
 		
-		// ¿ªÊ¼ÂÖÁ÷·¢ÅÆ
+		// å¼€å§‹è½®æµå‘ç‰Œ
 		timer1 = new Timer();
 	    timer1.scheduleAtFixedRate(new Task1(), 0, 1000);
 	}	
@@ -544,7 +550,7 @@ class Gamer{
 		}
 	}
 	
-	public void dropUpCards(){						// ÔÚÇÀÍ¼ÌÚÖĞÊ¤ÀûºóÇå¿Õ·­¿ªµÄÅÆ
+	public void dropUpCards(){						// åœ¨æŠ¢å›¾è…¾ä¸­èƒœåˆ©åæ¸…ç©ºç¿»å¼€çš„ç‰Œ
 		cardShown = -1;
 		for(int i = 0; i<upCount; i++){
 			cardUp[i] = -1;
@@ -552,15 +558,15 @@ class Gamer{
 		upCount = 0;
 	}
 
-	public void addCards(int[] addSet, int num){	// ÊäÅÆºó¼ÓÅÆ£¬½«¸ø¶¨µÄÅÆ¶Ñ¼ÓÔÚÕ»µ×
+	public void addCards(int[] addSet, int num){	// è¾“ç‰ŒååŠ ç‰Œï¼Œå°†ç»™å®šçš„ç‰Œå †åŠ åœ¨æ ˆåº•
 		for(int i = 0; i < num; i++){
 			downHead = (downHead - 1 + 80) % 80;
 			cardDown[downHead] = addSet[i];
 		}
 	}
 	
-	public int turnCard(){							// ·­ÅÆ
-		if(downTail == downHead) return -1;			// ÒÑ¾­Ã»ÓĞÅÆÁË
+	public int turnCard(){							// ç¿»ç‰Œ
+		if(downTail == downHead) return -1;			// å·²ç»æ²¡æœ‰ç‰Œäº†
 		
 		downTail = (downTail - 1 + 80) % 80;
 		cardShown = cardDown[downTail]; 
