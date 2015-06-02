@@ -17,17 +17,19 @@ public class Client extends JFrame {
 	public Client(JungleSpeedClient pClient) {
 		super("Jungle Speed");
 		Container c = getContentPane();
-		c.setLayout(new FlowLayout(FlowLayout.LEFT));
+//		c.setLayout(new FlowLayout(FlowLayout.LEFT));
+		c.setLayout(null);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(defaultW, defaultH);
+		
+		loginDialog = new LoginDialog(this);
+		registerDialog = new RegisterDialog(this);
 		
 		this.pClient = pClient;
 	}
 	
 	public void run() {
 		setVisible(true);
-		loginDialog = new LoginDialog(this);
-		registerDialog = new RegisterDialog(this);
 		loginDialog.setVisible(true);
 	}
 	
