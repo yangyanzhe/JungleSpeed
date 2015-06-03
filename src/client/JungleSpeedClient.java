@@ -16,7 +16,6 @@ public class JungleSpeedClient {
 	Client app = null;
 	
 	public JungleSpeedClient() {
-		// TODO Auto-generated constructor stub
 		ip = "127.0.0.1";
 		port = 4700;
 		
@@ -47,7 +46,6 @@ class ClientThread extends Thread {
 	JungleSpeedClient pClient;
 	
 	public ClientThread(JungleSpeedClient pClient) {
-		// TODO Auto-generated constructor stub
 		this.pClient = pClient;
 	}
 	
@@ -129,8 +127,12 @@ class ClientThread extends Thread {
 					pClient.app.loginDialog.setVisible(false);
 					pClient.app.registerDialog.setVisible(true);
 				}
+				else if (splitStrings[0].equals("tellseatinfo")) {
+					//命令格式是tellseatinfo~用户名~桌子号~座位号
+					System.out.println("用户" + splitStrings[1] + "坐在" + splitStrings[2]
+							+ "号桌子的" + splitStrings[3] + "号位置上");
+				}
 			} catch (Exception e) {
-				// TODO: handle exception
 			}
 		}
 	}
@@ -140,7 +142,6 @@ class ClientOperation extends Thread {
 	JungleSpeedClient pClient;
 	
 	public ClientOperation(JungleSpeedClient pClient) {
-		// TODO Auto-generated constructor stub
 		this.pClient = pClient;
 	}
 	

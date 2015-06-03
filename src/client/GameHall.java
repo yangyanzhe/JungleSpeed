@@ -24,6 +24,7 @@ public class GameHall extends JPanel implements MouseListener{
 	
 	// private JPanel drawingPanel;
 	private HallWindow drawingPanel;
+	private Client p;
 	
 	public GameHall(Client p) {
 		super(new BorderLayout());
@@ -42,6 +43,8 @@ public class GameHall extends JPanel implements MouseListener{
 		
 		// layout
 		add(scroller, BorderLayout.CENTER);
+		
+		this.p = p;
 	}
 
  	public class HallWindow extends JPanel{
@@ -186,6 +189,10 @@ public class GameHall extends JPanel implements MouseListener{
 			
 			drawingPanel.addchairs(id);
 			System.out.println("new player added in Pos: (" + tablex + ", " + tabley + "), in " + playerPos);
+			
+			int tableNoInServer = (tablex + 1) * (tabley + 1) - 1;
+			p.pClient.os.println("jointable~" + tableNoInServer + "~" + playerPos);
+			p.pClient.os.flush();
 		}
 	}
 

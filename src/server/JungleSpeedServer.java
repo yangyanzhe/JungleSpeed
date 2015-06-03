@@ -43,10 +43,12 @@ class SOCKET {
 	int Grade;			//用户积分
 	int Rank;			//用户排名
 	int No;				//桌号
+	int seatInTable;    //在桌子中坐的位置
 	
 	SOCKET(Socket socket) {
 		this.socket=socket;
-		No = -1;		//表示还没进桌子
+		No = -1;
+		seatInTable = -1;
 		try {
 			is=new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			os = new PrintWriter(socket.getOutputStream());
@@ -171,6 +173,10 @@ class Desk extends Game {
 	
 	public boolean join(SOCKET _socket) {
 		for (int i = 0; i < 8; i++) {
+			if (_socket.No != -1) { 
+				//同一个socket不能加入多个桌子或多个位置
+				return false;
+			}
 			if (_sockets[i] == null) {
 				_sockets[i] = _socket;
 				return true;
@@ -186,7 +192,6 @@ class User {
 	private int score = 0;
 	
 	public User(String username, String password) {
-		// TODO Auto-generated constructor stub
 		this.username = username;
 		this.password = password;
 		this.score = 0;
@@ -467,46 +472,72 @@ class Messenger extends Thread {
 					String[] splitStrings = content.split("~");
 					
 					if(splitStrings[0].equals("login")) {
-						System.out.println("server get login info!");
-						User currentUser = userManager.verify(splitStrings[1], splitStrings[2]);
-						if (currentUser != null) {
-							_socket.os.println("loginreveived");
-							_socket.os.flush();
-							
-							System.out.println("通过验证,登录成功");
-							SOCKETList.add(_socket);
-							_socket.ID = currentUser.getUsername();
-							_socket.No = -1;
-							_socket.Grade = currentUser.getScore();
-							
-							int n = SOCKETList.size();
-							for (int i = 0; i < n; i++) {
-								SOCKET temp = (SOCKET)SOCKETList.get(i);
-								temp.os.println("newgamer~" + currentUser.getUsername() + "~" + currentUser.getScore());
-								temp.os.flush();
+						//login~username~password
+						if (splitStrings.length == 3){
+							System.out.println("server get login info!");
+							User currentUser = userManager.verify(splitStrings[1], splitStrings[2]);
+							if (currentUser != null) {
+								_socket.os.println("loginreveived");
+								_socket.os.flush();
+								
+								System.out.println("通过验证,登录成功");
+								SOCKETList.add(_socket);
+								_socket.ID = currentUser.getUsername();
+								_socket.No = -1;
+								_socket.seatInTable = -1;
+								_socket.Grade = currentUser.getScore();
+								
+								int n = SOCKETList.size();
+								for (int i = 0; i < n; i++) {
+									SOCKET temp = (SOCKET)SOCKETList.get(i);
+									temp.os.println("newgamer~" + currentUser.getUsername() + "~" + currentUser.getScore());
+									temp.os.flush();
+								}
+								
+								//把游戏大厅其他已加入桌子的人的位置信息告诉客户端让他渲染
+								for (int i = 0; i < n; i++) {
+									//命令格式是tellseatinfo~用户名~桌子号~座位号
+									SOCKET temp = (SOCKET)SOCKETList.get(i);
+									if (temp.No >= 0 && temp.seatInTable >= 0) {
+										_socket.os.println("tellseatinfo~" + temp.ID + "~" + temp.No + "~" + temp.seatInTable);
+										_socket.os.flush();
+									}
+								}
+							}
+							else {
+								_socket.os.println("loginrejected");
+								_socket.os.flush();
+								System.out.println("拒绝通过");
 							}
 						}
 						else {
-							_socket.os.println("loginrejected");
-							_socket.os.flush();
-							System.out.println("拒绝通过");
+							System.out.println("login指令参数数目不对！");
 						}
 					}
 					else if (splitStrings[0].equals("jointable")) {
-						//加入桌子，命令格式为 jointable~桌子编号
-						System.out.println("joining table...");
-						int tableNum = Integer.parseInt(splitStrings[1]);
-						if (desks[tableNum] == null) {
-							desks[tableNum] = new Desk();
-						}
-						boolean isSucceed = desks[tableNum].join(_socket);
-						if (isSucceed) {
-							_socket.os.println("jointablesuccess");
-							_socket.os.flush();
+						//加入桌子，命令格式为 jointable~桌子编号~玩家座位位置
+						if (splitStrings.length == 3) {
+							System.out.println("joining table...");
+							int tableNum = Integer.parseInt(splitStrings[1]);
+							int seatPos = Integer.parseInt(splitStrings[2]);
+							if (desks[tableNum] == null) {
+								desks[tableNum] = new Desk();
+							}
+							boolean isSucceed = desks[tableNum].join(_socket);
+							if (isSucceed) {
+								_socket.No = tableNum;
+								_socket.seatInTable = seatPos;
+								_socket.os.println("jointablesuccess");
+								_socket.os.flush();
+							}
+							else {
+								_socket.os.println("jointablefail");
+								_socket.os.flush();
+							}
+							//TODO 可以把新加入的信息告诉所有客户端让他渲染，不过若加入的动作太过频繁还是不传好
 						}
 						else {
-							_socket.os.println("jointablefail");
-							_socket.os.flush();
+							System.out.println("jointable命令参数错误！");
 						}
 					}
 					else if (splitStrings[0].equals("userready")) {
@@ -590,7 +621,6 @@ class Messenger extends Thread {
 					}
 				}
 			} catch (Exception e) {
-				// TODO: handle exception
 			}
 		}
 	}
