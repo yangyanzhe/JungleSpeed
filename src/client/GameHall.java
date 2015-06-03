@@ -168,7 +168,7 @@ public class GameHall extends JPanel implements MouseListener{
  		int playerPos = 0;
  		int id = 0;
  		
- 		if(25 <= currentX && currentX <= 575 && 40 <= currentY && currentY <= 870){
+ 		if(25 <= currentX && currentX <= 625 && 40 <= currentY && currentY <= 870){
  			tablex = (currentX - 25) / 200;
  			tabley = currentY / 180;
  			
