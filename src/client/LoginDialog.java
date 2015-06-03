@@ -98,7 +98,8 @@ public class LoginDialog extends JDialog {
 			String username = usernameField.getText();
 			String password = new String(passwordField.getPassword());
 			// TODO: 判断登陆是否成功
-			
+			client.pClient.os.println("login~" + username + "~" + password);
+			client.pClient.os.flush();
 		}
 	}
 	

@@ -13,8 +13,9 @@ public class JungleSpeedClient {
 	PrintWriter os;
 	BufferedReader is;
 	
+	Client app = null;
+	
 	public JungleSpeedClient() {
-		// TODO Auto-generated constructor stub
 		ip = "127.0.0.1";
 		port = 4700;
 		
@@ -31,8 +32,8 @@ public class JungleSpeedClient {
 		clientThread.start();
 		//ClientOperation clientOperation = new ClientOperation(this);
 		//clientOperation.start();
-		Client app = new Client(this);
-		app.run();
+		this.app = new Client(this);
+		this.app.run();
 	}
 	
 	public static void main(String[] args) {
@@ -45,7 +46,6 @@ class ClientThread extends Thread {
 	JungleSpeedClient pClient;
 	
 	public ClientThread(JungleSpeedClient pClient) {
-		// TODO Auto-generated constructor stub
 		this.pClient = pClient;
 	}
 	
@@ -56,7 +56,10 @@ class ClientThread extends Thread {
 				String[] splitStrings = s.split("~");
 				
 				if (splitStrings[0].equals("loginreveived")) {
-					System.out.println("Server has received login info!!");
+					System.out.println("登录成功！");
+					pClient.app.loginDialog.setVisible(false);
+					pClient.app.registerDialog.setVisible(false);
+					pClient.app.gamehall_panel.setVisible(true);
 				}
 				else if (splitStrings[0].equals("jointablesuccess")){
 					System.out.println("Join Table Success!");
@@ -107,13 +110,33 @@ class ClientThread extends Thread {
 					//new gamer log in
 					String newUser = splitStrings[1];
 					int score = Integer.parseInt(splitStrings[2]);
-					
+					System.out.println("用户" + newUser + "进入游戏大厅，分数为" + score);
 				}
 				else if (splitStrings[0].equals("loginrejected")) {
 					System.out.println("登录失败！用户名或密码错误！");
 				}
+				else if (splitStrings[0].equals("registersuccess")) {
+					System.out.println("注册成功");
+					pClient.app.gamehall_panel.setVisible(false);
+					pClient.app.loginDialog.setVisible(false);
+					pClient.app.registerDialog.setVisible(true);
+				}
+				else if (splitStrings[0].equals("registerfail")) {
+					System.out.println("注册失败");
+					pClient.app.gamehall_panel.setVisible(false);
+					pClient.app.loginDialog.setVisible(false);
+					pClient.app.registerDialog.setVisible(true);
+				}
+				else if (splitStrings[0].equals("tellseatinfo")) {
+					//命令格式是tellseatinfo~用户名~桌子号~座位号
+					System.out.println("用户" + splitStrings[1] + "坐在" + splitStrings[2]
+							+ "号桌子的" + splitStrings[3] + "号位置上");
+				}
+				else if (splitStrings[0].equals("tablegamestart")) {
+					//tablegamestart~桌子号
+					System.out.println(splitStrings[1] + "号桌子已经开始了游戏，不能加入!");
+				}
 			} catch (Exception e) {
-				// TODO: handle exception
 			}
 		}
 	}
@@ -123,7 +146,6 @@ class ClientOperation extends Thread {
 	JungleSpeedClient pClient;
 	
 	public ClientOperation(JungleSpeedClient pClient) {
-		// TODO Auto-generated constructor stub
 		this.pClient = pClient;
 	}
 	
