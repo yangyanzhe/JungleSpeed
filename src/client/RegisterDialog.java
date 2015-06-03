@@ -2,10 +2,14 @@ package client;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -16,9 +20,9 @@ import javax.swing.JTextField;
 @SuppressWarnings("serial")
 public class RegisterDialog extends JDialog {
 	Client client;
-	static int defaultW = 200;
-	static int defaultH = 210;
+	static int maxNameLen = 10;
 	
+	JPanel panelContainer;
 	JPanel welcomePanel;
 	JPanel usernamePanel;
 	JTextField usernameField;
@@ -30,59 +34,75 @@ public class RegisterDialog extends JDialog {
 	JButton loginButton;
 	JButton registerButton;
 	
-	LoginDialog loginDialog;
-	
-	public RegisterDialog(Client f) {
-		super(f, "注册", true);
-		client = f;
+	public RegisterDialog(Client client) {
+		super(client, "注册", true);
+		this.client = client;
 		init();
 	}
 	
 	public void init() {
 		// 设置布局方式
-		Container c = getContentPane();
-		c.setLayout(new FlowLayout(FlowLayout.CENTER));
+		panelContainer = new JPanel();
+		panelContainer.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+		// 设置布局方式
+		panelContainer.setLayout(new BoxLayout(panelContainer, BoxLayout.Y_AXIS));
 		
 		// 添加组件
 		welcomePanel = new JPanel();
-		welcomePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+		welcomePanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
+		welcomePanel.setLayout(new BoxLayout(welcomePanel, BoxLayout.X_AXIS));
 		welcomePanel.add(new JLabel("欢迎来到图腾快手游戏"));
-		c.add(welcomePanel);
+		welcomePanel.add(Box.createGlue());
+		panelContainer.add(welcomePanel);
 		
 		usernamePanel = new JPanel();
-		usernamePanel.setLayout(new BorderLayout());
-		usernamePanel.add(new JLabel("账号"), BorderLayout.WEST);
+		usernamePanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
+		usernamePanel.setLayout(new BoxLayout(usernamePanel, BoxLayout.X_AXIS));
+		usernamePanel.add(new JLabel("昵称"));
+		usernamePanel.add(Box.createHorizontalStrut(5));
 		usernameField = new JTextField(10);
-		usernamePanel.add(usernameField, BorderLayout.CENTER);
-		c.add(usernamePanel);
+		usernamePanel.add(usernameField);
+		panelContainer.add(usernamePanel);
 		
 		passwordPanel = new JPanel();
-		passwordPanel.setLayout(new BorderLayout());
-		passwordPanel.add(new JLabel("密码"), BorderLayout.WEST);
+		passwordPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
+		passwordPanel.setLayout(new BoxLayout(passwordPanel, BoxLayout.X_AXIS));
+		passwordPanel.add(new JLabel("密码"));
+		passwordPanel.add(Box.createHorizontalStrut(5));
 		passwordField = new JPasswordField(10);
-		passwordPanel.add(passwordField, BorderLayout.CENTER);
-		c.add(passwordPanel);
+		passwordPanel.add(passwordField);
+		panelContainer.add(passwordPanel);
 		
 		repasswordPanel = new JPanel();
-		repasswordPanel.setLayout(new BorderLayout());
-		repasswordPanel.add(new JLabel("密码"), BorderLayout.WEST);
+		repasswordPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
+		repasswordPanel.setLayout(new BoxLayout(repasswordPanel, BoxLayout.X_AXIS));
+		repasswordPanel.add(new JLabel("确认"));
 		repasswordField = new JPasswordField(10);
-		repasswordPanel.add(repasswordField, BorderLayout.CENTER);
-		c.add(repasswordPanel);
+		repasswordPanel.add(Box.createHorizontalStrut(5));
+		repasswordPanel.add(repasswordField);
+		panelContainer.add(repasswordPanel);
 		
 		buttonPanel = new JPanel();
-		buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		buttonPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
+		buttonPanel.add(Box.createGlue());
 		registerButton = new JButton("注册");
 		registerButton.addActionListener(new RegisterListener());
 		buttonPanel.add(registerButton);
+		buttonPanel.add(Box.createHorizontalStrut(5));
 		loginButton = new JButton("登陆");
 		loginButton.addActionListener(new LoginListener());
 		buttonPanel.add(loginButton);
-		c.add(buttonPanel);
+		panelContainer.add(buttonPanel);
 		
-		setSize(defaultW, defaultH);
-		setLocation((Client.defaultW-RegisterDialog.defaultW)/2, 
-					(Client.defaultH-RegisterDialog.defaultH)/2);
+		Container c = getContentPane();
+		c.add(panelContainer);
+		pack();
+		Dimension registerDimension = getPreferredSize();
+		Dimension clientDimension = client.getPreferredSize();
+		setLocation((clientDimension.width-registerDimension.width)/2, 
+					(clientDimension.height-registerDimension.height)/2);
+		setResizable(false);
 	}
 	
 	class RegisterListener implements ActionListener {
