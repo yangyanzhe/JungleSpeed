@@ -81,11 +81,11 @@ public class PlayerTablePanel extends JPanel {
 		tablePane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		this.add(tablePane);
 		
-		ImageIcon icon = new ImageIcon("/Users/liutongtong/Pictures/logo.png");
+		/*ImageIcon icon = new ImageIcon("/Users/liutongtong/Pictures/logo.png");
 		ImageIcon icon2 = new ImageIcon("/Users/liutongtong/Pictures/Conan1.jpg");
 		addPlayer(icon, "杨妍喆", 20);
 		addPlayer(icon2, "包煜", 200);
-		removePlayer();
+		removePlayer();*/
 	}
 	
 	public void addPlayer(ImageIcon image, String name, int score) {
