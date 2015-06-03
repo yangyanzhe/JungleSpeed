@@ -191,7 +191,7 @@ class Desk extends Game {
 	}
 	
 	public void remove(SOCKET _socket) {
-		//TODO 要处理有人在游戏过程当中强退游戏后把他的牌都放在图腾下面，游戏继续。
+		//TODO 要处理有人在游戏过程当中强退游戏后把他的牌都放在图腾下面，游戏继续。进入桌子里面退出还需要测试
 		// 游戏中有人强退游戏 或是 游戏还没开始时有人退出桌子
 		int i;
 		for (i = 0; i < 8; i++) {
@@ -495,7 +495,6 @@ class Messenger extends Thread {
 					String[] splitStrings = content.split("~");
 					
 					if(splitStrings[0].equals("login")) {
-						//TODO 处理禁止同一用户多处登录多处
 						//login~username~password
 						if (splitStrings.length == 3){
 							System.out.println("server get login info!");
