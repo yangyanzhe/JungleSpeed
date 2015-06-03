@@ -438,7 +438,7 @@ class Messenger extends Thread {
 	Desk[] desks;
 	Vector<SOCKET> SOCKETList;     //所有在线的人
 	UserManager userManager;
-	final int maxTable = 64;
+	final int maxTable = 12;
 	
 	public Messenger() {
 		mq = new MessageQueue();

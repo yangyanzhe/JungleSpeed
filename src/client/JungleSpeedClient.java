@@ -13,6 +13,8 @@ public class JungleSpeedClient {
 	PrintWriter os;
 	BufferedReader is;
 	
+	Client app = null;
+	
 	public JungleSpeedClient() {
 		// TODO Auto-generated constructor stub
 		ip = "127.0.0.1";
@@ -31,8 +33,8 @@ public class JungleSpeedClient {
 		clientThread.start();
 		//ClientOperation clientOperation = new ClientOperation(this);
 		//clientOperation.start();
-		Client app = new Client(this);
-		app.run();
+		this.app = new Client(this);
+		this.app.run();
 	}
 	
 	public static void main(String[] args) {
@@ -57,6 +59,9 @@ class ClientThread extends Thread {
 				
 				if (splitStrings[0].equals("loginreveived")) {
 					System.out.println("登录成功！");
+					pClient.app.loginDialog.setVisible(false);
+					pClient.app.registerDialog.setVisible(false);
+					pClient.app.gamehall_panel.setVisible(true);
 				}
 				else if (splitStrings[0].equals("jointablesuccess")){
 					System.out.println("Join Table Success!");
@@ -107,16 +112,22 @@ class ClientThread extends Thread {
 					//new gamer log in
 					String newUser = splitStrings[1];
 					int score = Integer.parseInt(splitStrings[2]);
-					
+					System.out.println("用户" + newUser + "进入游戏大厅，分数为" + score);
 				}
 				else if (splitStrings[0].equals("loginrejected")) {
 					System.out.println("登录失败！用户名或密码错误！");
 				}
 				else if (splitStrings[0].equals("registersuccess")) {
 					System.out.println("注册成功");
+					pClient.app.gamehall_panel.setVisible(false);
+					pClient.app.loginDialog.setVisible(false);
+					pClient.app.registerDialog.setVisible(true);
 				}
 				else if (splitStrings[0].equals("registerfail")) {
 					System.out.println("注册失败");
+					pClient.app.gamehall_panel.setVisible(false);
+					pClient.app.loginDialog.setVisible(false);
+					pClient.app.registerDialog.setVisible(true);
 				}
 			} catch (Exception e) {
 				// TODO: handle exception
