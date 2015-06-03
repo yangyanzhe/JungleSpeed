@@ -155,39 +155,44 @@ public class GameHall extends JPanel implements MouseListener{
 		
 	} // end hallWindow
 	
-	// handle mouse event
-	public void mouseClicked(MouseEvent e) {
-		
-		int currentX = e.getX();
-		int currentY = e.getY(); 
-		int tablex = 0;
-		int tabley = 0;
-		int playerPos = 0;
-		int id = 0;
-		
-		if(25 <= currentX && currentX <= 575 && 40 <= currentY && currentY <= 870){
-			tablex = (currentX - 65) / 200;
-			tabley = currentY / 180;
-			
-			// the table has begun the game, cannot join
-			if(drawingPanel.tables[tablex + tabley * 3] != -1){
-				return;
-			}
-			
-			int x = (currentX - 25) % 200;
-			int y = currentY % 180;
-			
-			x -= 40;
-			y -= 40;
-			playerPos = (x / 50) + 3 * (y / 50);
-			
-			id = (tablex + tabley * 3) * 9 + playerPos;
-			if(drawingPanel.chairs[id] != -1)	return;
-			
-			drawingPanel.addchairs(id);
-			System.out.println("new player added in Pos: (" + tablex + ", " + tabley + "), in " + playerPos);
-		}
-	}
+ 	// handle mouse event
+ 	public void mouseClicked(MouseEvent e) {
+ 		
+ 		int currentX = e.getX();
+ 		int currentY = e.getY(); 
+ 		int tablex = 0;
+ 		int tabley = 0;
+ 		int playerPos = 0;
+ 		int id = 0;
+ 		
+ 		if(25 <= currentX && currentX <= 575 && 40 <= currentY && currentY <= 870){
+ 			tablex = (currentX - 25) / 200;
+ 			tabley = currentY / 180;
+ 			
+ 			// the table has begun the game, cannot join
+ 			if(drawingPanel.tables[tablex + tabley * 3] != -1){
+ 				return;
+ 			}
+ 			
+ 			int x = (currentX - 25) % 200;
+ 			int y = currentY % 180;
+ 			x -= 40;
+ 			y -= 40;
+ 			
+ 			System.out.println("x: " + x + " y: " + y );
+ 			if(x > 150 || y > 150 || x < 0 || y < 0){
+ 				return;
+ 			}
+ 			
+ 			playerPos = (x / 50) + 3 * (y / 50);
+ 			
+ 			id = (tablex + tabley * 3) * 9 + playerPos;
+ 			if(drawingPanel.chairs[id] != -1)	return;
+ 			
+ 			drawingPanel.addchairs(id);
+ 			System.out.println("new player added in Pos: (" + tablex + ", " + tabley + "), in " + playerPos);
+ 		}
+ 	}
 
 	public void mouseEntered(MouseEvent arg0) { }
 
