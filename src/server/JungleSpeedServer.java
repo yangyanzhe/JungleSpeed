@@ -172,6 +172,11 @@ class Desk extends Game {
 	}
 	
 	public boolean join(SOCKET _socket) {
+		if (isReady) {
+			//游戏已经开始
+			return false;
+		}
+		
 		for (int i = 0; i < 8; i++) {
 			if (_socket.No != -1) { 
 				//同一个socket不能加入多个桌子或多个位置
@@ -500,6 +505,15 @@ class Messenger extends Thread {
 									SOCKET temp = (SOCKET)SOCKETList.get(i);
 									if (temp.No >= 0 && temp.seatInTable >= 0) {
 										_socket.os.println("tellseatinfo~" + temp.ID + "~" + temp.No + "~" + temp.seatInTable);
+										_socket.os.flush();
+									}
+								}
+								
+								//告诉客户端哪些桌子已经开始了游戏
+								//tablegamestart~桌子号
+								for (int i = 0; i < maxTable; i++) {
+									if (desks[i].isReady) {
+										_socket.os.println("tablegamestart~" + i);
 										_socket.os.flush();
 									}
 								}

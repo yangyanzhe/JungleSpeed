@@ -132,6 +132,10 @@ class ClientThread extends Thread {
 					System.out.println("用户" + splitStrings[1] + "坐在" + splitStrings[2]
 							+ "号桌子的" + splitStrings[3] + "号位置上");
 				}
+				else if (splitStrings[0].equals("tablegamestart")) {
+					//tablegamestart~桌子号
+					System.out.println(splitStrings[1] + "号桌子已经开始了游戏，不能加入!");
+				}
 			} catch (Exception e) {
 			}
 		}
