@@ -126,6 +126,9 @@ public class Game {
 
 	public void turnCard(){
 		currentGamer = nextGamer;
+		if(currentGamer >= gamerNumber){
+			currentGamer = (currentGamer + 1) % gamerNumber;
+		}
 		
 		currentMode = nextMode;
 		nextMode = 0;
@@ -493,6 +496,35 @@ public class Game {
 		timer1 = new Timer();
 	    timer1.scheduleAtFixedRate(new Task1(), 0, 1000);
 	}	
+	
+	public void exceptionLeave(int id){
+		System.out.println("用户"+id+"掉线了");
+		
+		// put cards under totem
+		totemCardsNumber = gamers[id].upCount;
+		int i = 0;
+		for(i = 0; i < totemCardsNumber; i++){
+			totemCards[i] = gamers[id].cardUp[i];
+		}
+		gamers[id].dropUpCards();
+		for(int j = gamers[id].downHead; j <= gamers[id].downTail; j++){
+			totemCards[i] = gamers[id].cardDown[j];
+			i++;
+		}
+		
+		for (int j = 0; j < gamerNumber; j++) {
+			_sockets[j].os.println("grabresult~rejecttototem~" + id);
+			_sockets[j].os.flush();
+		}
+		
+		Gamer leaveGamer = gamers[id];
+		leaveGamer.init();
+		for(int j = id; j < gamerNumber; j++){
+			gamers[j] = gamers[j+1];
+		}
+		gamers[gamerNumber-1] = leaveGamer;	
+		gamerNumber--;
+	}
 }
 
 /************************************************************

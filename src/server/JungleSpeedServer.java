@@ -193,9 +193,10 @@ class Desk extends Game {
 	public void remove(SOCKET _socket) {
 		//TODO 要处理有人在游戏过程当中强退游戏后把他的牌都放在图腾下面，游戏继续。进入桌子里面退出还需要测试
 		// 游戏中有人强退游戏 或是 游戏还没开始时有人退出桌子
-		int i;
-		for (i = 0; i < 8; i++) {
+		int id = 0;
+		for (int i = 0; i < 8; i++) {
 			if (_sockets[i].equals(_socket)) {
+				id = i;
 				int j;
 				for (j = i; j < 7; j++) {
 					_sockets[j] = _sockets[j + 1];
@@ -203,7 +204,8 @@ class Desk extends Game {
 				_sockets[j] = null;
 			}
 		}
-		gamerNumber--;
+		
+		exceptionLeave(id);
 	}
 }
 

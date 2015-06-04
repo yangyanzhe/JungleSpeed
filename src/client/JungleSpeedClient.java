@@ -33,10 +33,10 @@ public class JungleSpeedClient {
 		
 		ClientThread clientThread = new ClientThread(this);
 		clientThread.start();
-		//ClientOperation clientOperation = new ClientOperation(this);
-		//clientOperation.start();
-		this.app = new Client(this);
-		this.app.run();
+		ClientOperation clientOperation = new ClientOperation(this);
+		clientOperation.start();
+		//this.app = new Client(this);
+		//this.app.run();
 	}
 	
 	public static void main(String[] args) {
