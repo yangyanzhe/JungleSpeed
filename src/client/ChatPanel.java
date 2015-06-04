@@ -108,6 +108,9 @@ public class ChatPanel extends JPanel {
 			if (message.length() > 0) {
 				addPlayerMessage(client.player.getIcon(), client.player.getName(), message);
 				inputField.setText("");
+				
+				client.pClient.os.println("chattoserver~" + message);
+				client.pClient.os.flush();
 			}
 		}
 	}

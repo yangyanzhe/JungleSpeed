@@ -34,16 +34,16 @@ public class JungleSpeedServer {
 	}
 }
 
-//-------------------SOCKET类，封装用户Socket、其输入输出流、相关信息-----------
 class SOCKET {
-	Socket socket;		//Socket
-	BufferedReader is;	//输入流
-	PrintWriter os;		//输出流
-	String ID;			//用户名，是关键码
-	int Grade;			//用户积分
-	int Rank;			//用户排名
-	int No;				//桌号
-	int seatInTable;    //在桌子中坐的位置
+	Socket socket;
+	BufferedReader is;
+	PrintWriter os;
+	String ID;//用户名
+	int Grade;//用户积分
+	int Rank;//用户排名
+	int No;	//桌号
+	int seatInTable;//在桌子中坐的位置
+	String avatar = "";
 	
 	SOCKET(Socket socket) {
 		this.socket=socket;
@@ -530,6 +530,7 @@ class Messenger extends Thread {
 									_socket.No = -1;
 									_socket.seatInTable = -1;
 									_socket.Grade = currentUser.getScore();
+									_socket.avatar = currentUser.getAvatar();
 									
 									int n = SOCKETList.size();
 	
@@ -693,6 +694,18 @@ class Messenger extends Thread {
 						}
 						User t = userManager.findByUsername(_socket.ID);
 						t.isLogIn = false;
+					}
+					else if (splitStrings[0].equals("chattoserver")) {
+						//chattoserver~message
+						String msg = content.substring(13);
+						int n = SOCKETList.size();
+						for (int i = 0; i < n; i++) {
+							SOCKET temp = (SOCKET)SOCKETList.get(i);
+							if (!_socket.equals(temp)) {
+								temp.os.println("chattoclient~" + _socket.ID + "~" + _socket.avatar + "~" + msg);
+								temp.os.flush();
+							}
+						}
 					}
 				}
 			} catch (Exception e) {

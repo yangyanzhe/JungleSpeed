@@ -152,6 +152,15 @@ class ClientThread extends Thread {
 				else if (splitStrings[0].equals("loginagain")) {
 					System.out.println("重复登录，登录失败！");
 				}
+				else if (splitStrings[0].equals("chattoclient")) {
+					//chattoclient~username~avatar~msg
+					ImageIcon icon = new ImageIcon(splitStrings[2]);
+					String msg = s.substring(0);
+					for (int i = 0; i < 3; i++) {
+						msg = msg.substring(splitStrings[i].length() + 1);
+					}
+					pClient.app.chatPanel.addPlayerMessage(icon, splitStrings[1], msg);
+				}
 				//TODO 是否添加登出功能？
 			} catch (Exception e) {
 			}
