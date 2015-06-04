@@ -91,7 +91,6 @@ class ClientListener extends Thread	{
 				System.out.println("一个用户断线了"+_socket.socket);
 				if (_socket.ID != null) {
 					//若该用户还没有登录，就不把他的消息给其他所有客户端了
-					System.out.println("什么情况");
 					Information info = new Information(_socket, "offline");
 					messenger.mq.put(info);
 				}
