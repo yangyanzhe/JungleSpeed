@@ -13,15 +13,10 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.TreeSet;
 import java.util.Vector;
-
-import javax.xml.stream.events.EndDocument;
 
 public class JungleSpeedServer {
 	public static void main(String[] args) {
@@ -49,6 +44,7 @@ class SOCKET {
 		this.socket=socket;
 		No = -1;
 		seatInTable = -1;
+		ID = null;
 		try {
 			is=new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			os = new PrintWriter(socket.getOutputStream());
@@ -93,8 +89,11 @@ class ClientListener extends Thread	{
 			}
 			catch(IOException e) {
 				System.out.println("一个用户断线了"+_socket.socket);
-				Information info = new Information(_socket, "offline");
-				messenger.mq.put(info);
+				if (_socket.ID != null) {
+					//若该用户还没有登录，就不把他的消息给其他所有客户端了
+					Information info = new Information(_socket, "offline");
+					messenger.mq.put(info);
+				}
 				this.stop();
 			}
 		}
@@ -193,9 +192,12 @@ class Desk extends Game {
 	public void remove(SOCKET _socket) {
 		//TODO 要处理有人在游戏过程当中强退游戏后把他的牌都放在图腾下面，游戏继续。进入桌子里面退出还需要测试
 		// 游戏中有人强退游戏 或是 游戏还没开始时有人退出桌子
+
+		int id = 0;
 		int i;
 		for (i = 0; i < 8; i++) {
-			if (_sockets[i].equals(_socket)) {
+			if (_sockets[i] != null && _sockets[i].equals(_socket)) {
+				id = i;
 				int j;
 				for (j = i; j < 7; j++) {
 					_sockets[j] = _sockets[j + 1];
@@ -203,7 +205,8 @@ class Desk extends Game {
 				_sockets[j] = null;
 			}
 		}
-		gamerNumber--;
+		
+		exceptionLeave(id);
 	}
 }
 
@@ -424,7 +427,6 @@ class UserManager{
 	}
 	
 	private boolean readFileByLines(){
-		File inFile = new File(fileName);
 		try {
 			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(
 					new FileInputStream(fileName), "UTF-8"));
@@ -589,12 +591,20 @@ class Messenger extends Thread {
 								_socket.seatInTable = seatPos;
 								_socket.os.println("jointablesuccess");
 								_socket.os.flush();
+								
+								//可以把新加入的信息告诉所有客户端让他渲染，不过若加入的动作太过频繁还是不传好
+								int n = SOCKETList.size();
+								for (int i = 0; i < n; i++) {
+									//命令格式是tellseatinfo~用户名~桌子号~座位号
+									SOCKET temp = (SOCKET)SOCKETList.get(i);
+									temp.os.println("tellseatinfo~" + _socket.ID + "~" + tableNum + "~" + seatPos);
+									temp.os.flush();
+								}
 							}
 							else {
 								_socket.os.println("jointablefail");
 								_socket.os.flush();
 							}
-							//TODO 可以把新加入的信息告诉所有客户端让他渲染，不过若加入的动作太过频繁还是不传好
 						}
 						else {
 							System.out.println("jointable命令参数错误！");
@@ -666,11 +676,11 @@ class Messenger extends Thread {
 					else if (splitStrings[0].equals("register")) {
 						//注册命令格式为register~用户名~密码
 						boolean flag = false;
-						//TODO 添加头像的对话框？默认头像？
+						//TODO 默认头像？
 						flag = userManager.add(splitStrings[1], splitStrings[2], "res/a.jpg");
 						if (flag) {
 							System.out.println("新用户" + splitStrings[1] + "注册成功！");
-							_socket.os.println("registersuccess");
+							_socket.os.println("registersuccess~" + splitStrings[1] + "~" + splitStrings[2]);
 							_socket.os.flush();
 							userManager.outputToFile();
 						}

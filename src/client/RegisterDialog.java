@@ -1,5 +1,6 @@
 package client;
 
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -28,6 +29,8 @@ public class RegisterDialog extends JDialog {
 	JPasswordField passwordField;
 	JPanel repasswordPanel;
 	JPasswordField repasswordField;
+	JPanel infoPanel;
+	JLabel infoLabel;
 	JPanel buttonPanel;
 	JButton loginButton;
 	JButton registerButton;
@@ -80,6 +83,14 @@ public class RegisterDialog extends JDialog {
 		repasswordPanel.add(repasswordField);
 		panelContainer.add(repasswordPanel);
 		
+		infoPanel = new JPanel();
+		infoPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
+		infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.X_AXIS));
+		infoLabel = new JLabel("");
+		infoPanel.add(infoLabel);
+		infoPanel.add(Box.createGlue());
+		panelContainer.add(infoPanel);
+		
 		buttonPanel = new JPanel();
 		buttonPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
@@ -108,14 +119,31 @@ public class RegisterDialog extends JDialog {
 			String username = usernameField.getText();
 			String password = new String(passwordField.getPassword());
 			String repassword = new String(repasswordField.getPassword());
-			// TODO: 判断注册是否成功
-			if (password.equals(repassword)) {
+			
+			if (username.equals("")) {
+				infoLabel.setText("用户名不能为空！");
+				infoLabel.setForeground(Color.RED);
+			}
+			else if (password.equals("")) {
+				infoLabel.setText("密码不能为空！");
+				infoLabel.setForeground(Color.RED);
+			}
+			else if (repassword.equals("")) {
+				infoLabel.setText("密码不能为空！");
+				infoLabel.setForeground(Color.RED);
+			}
+			else if (password.equals(repassword)) {
 				client.pClient.os.println("register~" + username + "~" + password);
 				client.pClient.os.flush();
 			}
 			else {
-				System.out.println("两次输入的密码不一致!");
+				//System.out.println("两次输入的密码不一致!");
+				infoLabel.setText("两次输入的密码不一致!");
+				infoLabel.setForeground(Color.RED);
 			}
+			usernameField.setText("");
+			passwordField.setText("");
+			repasswordField.setText("");
 		}
 	}
 	

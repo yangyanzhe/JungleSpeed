@@ -1,5 +1,6 @@
 package client;
 
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -8,7 +9,6 @@ import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -26,6 +26,8 @@ public class LoginDialog extends JDialog {
 	JTextField usernameField;
 	JPanel passwordPanel;
 	JPasswordField passwordField;
+	JPanel infoPanel;
+	JLabel infoLabel;
 	JPanel buttonPanel;
 	JButton loginButton;
 	JButton registerButton;
@@ -68,6 +70,16 @@ public class LoginDialog extends JDialog {
 		passwordPanel.add(passwordField);
 		panelContainer.add(passwordPanel);
 		
+		infoPanel = new JPanel();
+		infoPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
+		infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.X_AXIS));
+		infoLabel = new JLabel("");
+		infoPanel.add(infoLabel);
+		infoPanel.add(Box.createGlue());
+		panelContainer.add(infoPanel);
+		//infoLabel.setText("haha");
+		//infoLabel.setForeground(Color.RED);
+		
 		buttonPanel = new JPanel();
 		buttonPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
@@ -95,16 +107,29 @@ public class LoginDialog extends JDialog {
 		public void actionPerformed(ActionEvent e) {
 			String username = usernameField.getText();
 			String password = new String(passwordField.getPassword());
-			client.pClient.os.println("login~" + username + "~" + password);
-			client.pClient.os.flush();
-			//new Player的操作放在了JungleSpeedClient中，因为只有在登录成功消息接收后才能构造该类
-			/*ImageIcon icon = new ImageIcon("/Users/liutongtong/Pictures/logo.png");
-			client.player = new Player(icon, "tt", 100);*/
+			if (username.equals("")) {
+				infoLabel.setText("用户名不能为空！");
+				infoLabel.setForeground(Color.RED);
+			}
+			else if (password.equals("")) {
+				infoLabel.setText("密码不能为空！");
+				infoLabel.setForeground(Color.RED);
+			}
+			else {
+				client.pClient.os.println("login~" + username + "~" + password);
+				client.pClient.os.flush();
+				passwordField.setText("");
+				//new Player的操作放在了JungleSpeedClient中，因为只有在登录成功消息接收后才能构造该类
+				/*ImageIcon icon = new ImageIcon("/Users/liutongtong/Pictures/logo.png");
+				client.player = new Player(icon, "tt", 100);*/
+			}
 		}
 	}
 	
 	class RegisterListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
+			usernameField.setText("");
+			passwordField.setText("");
 			setVisible(false);
 			client.registerDialog.setVisible(true);
 		}

@@ -4,8 +4,6 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Image;
-import java.awt.MediaTracker;
 import java.awt.Toolkit;
 
 import javax.swing.BorderFactory;
@@ -26,21 +24,9 @@ public class Client extends JFrame {
 	LoginDialog loginDialog;
 	RegisterDialog registerDialog;
 	
-	JungleSpeedClient pClient;
-	
-	String str_player = "res/player.png";
-	String str_table = "res/table.png";
-	String str_hall_back = "res/hall_background.jpg";
-	String str_logo = "res/logo.png";
-	
-	Image playerImage;
-	Image table;
-	Image hallBack;
-	Image logo;
-	
+	JungleSpeedClient pClient;	
 	GameHall gamehall_panel;
-	MediaTracker mt;
-	
+
 	public Client(JungleSpeedClient pClient) {
 		super("Jungle Speed");
 		
@@ -69,31 +55,13 @@ public class Client extends JFrame {
 		cHallPanel.fill = GridBagConstraints.BOTH;
 //		hallPanel = new HallPanel(this);
 		
-		playerImage = getToolkit().getImage(str_player);
-		table = getToolkit().getImage(str_table);
-		logo = getToolkit().getImage(str_logo);
-		hallBack = getToolkit().getImage(str_hall_back);
-		
-		mt = new MediaTracker(this);
-		mt.addImage(hallBack, 0);
-		mt.addImage(table, 0);
-		mt.addImage(playerImage, 0);
-		mt.addImage(logo, 0);
-		
-		try
-		{
-			mt.waitForAll();
-		}catch(InterruptedException mye){System.out.println(mye);}
-		
 		gamehall_panel = new GameHall(this);
-		gamehall_panel.setSize(680,540);
+		gamehall_panel.setSize(800,700);
 //		gamehall_panel.setLocation(0,0);
-		
-		hallPanel = new HallPanel(this);
-//		panelContainer.add(hallPanel, cHallPanel);
+		panelContainer.add(gamehall_panel, cHallPanel);
 		
 		gamePanel = new GamePanel(this);
-		panelContainer.add(gamePanel, cHallPanel);
+//		panelContainer.add(gamePanel, cHallPanel);
 		
 		GridBagConstraints cPlayerListPanel = new GridBagConstraints();
 		cPlayerListPanel.gridx = 3;
