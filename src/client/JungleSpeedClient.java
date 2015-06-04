@@ -150,6 +150,11 @@ class ClientThread extends Thread {
 					//命令格式是tellseatinfo~用户名~桌子号~座位号
 					System.out.println("用户" + splitStrings[1] + "坐在" + splitStrings[2]
 							+ "号桌子的" + splitStrings[3] + "号位置上");
+					
+					int table = Integer.parseInt(splitStrings[2]);
+					int id = Integer.parseInt(splitStrings[3]);
+					id += table * 8;
+					pClient.app.gamehall_panel.drawingPanel.addchairs(id, 1);
 				}
 				else if (splitStrings[0].equals("tablegamestart")) {
 					//tablegamestart~桌子号
