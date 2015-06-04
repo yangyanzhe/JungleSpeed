@@ -201,12 +201,17 @@ class Desk extends Game {
 				int j;
 				for (j = i; j < 7; j++) {
 					_sockets[j] = _sockets[j + 1];
+					if(_sockets[j] == null){
+						break;
+					}
 				}
-				_sockets[j] = null;
+				_sockets[j] = _socket;
 			}
 		}
-		
-		exceptionLeave(id);
+		if (isReady) {
+			_socket.Grade -= 10;
+			exceptionLeave(id);
+		}
 	}
 }
 

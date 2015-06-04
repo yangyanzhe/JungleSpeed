@@ -56,7 +56,7 @@ public class Client extends JFrame {
 //		hallPanel = new HallPanel(this);
 		
 		gamehall_panel = new GameHall(this);
-		gamehall_panel.setSize(800,700);
+		gamehall_panel.setSize(800,600);
 //		gamehall_panel.setLocation(0,0);
 //		panelContainer.add(gamehall_panel, cHallPanel);
 		

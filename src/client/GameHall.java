@@ -48,7 +48,7 @@ public class GameHall extends JPanel implements MouseListener{
 		
 		// put the drawing area in a scroll pane
 		JScrollPane scroller = new JScrollPane(drawingPanel);
-		scroller.setPreferredSize(new Dimension(800, 700));
+		scroller.setPreferredSize(new Dimension(800, 600));
 		
 		// layout
 		add(scroller, BorderLayout.CENTER);
