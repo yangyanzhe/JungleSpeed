@@ -104,7 +104,6 @@ public class LoginDialog extends JDialog {
 	}
 	
 	class LoginListener implements ActionListener {
-		//TODO 处理未登录就进入
 		public void actionPerformed(ActionEvent e) {
 			String username = usernameField.getText();
 			String password = new String(passwordField.getPassword());
