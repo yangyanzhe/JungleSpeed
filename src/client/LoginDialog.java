@@ -3,6 +3,7 @@ package client;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -18,6 +19,8 @@ import javax.swing.JTextField;
 
 @SuppressWarnings("serial")
 public class LoginDialog extends JDialog {
+	private int state = 0;
+	
 	Client client;
 	
 	JPanel panelContainer;
@@ -97,9 +100,9 @@ public class LoginDialog extends JDialog {
 		c.add(panelContainer);
 		pack();
 		Dimension loginDimension = getPreferredSize();
-		Dimension clientDimension = client.getPreferredSize();
-		setLocation((clientDimension.width-loginDimension.width)/2, 
-					(clientDimension.height-loginDimension.height)/2);
+		Dimension screenDimension = Toolkit.getDefaultToolkit().getScreenSize();
+		setLocation((screenDimension.width-loginDimension.width)/2, 
+					(screenDimension.height-loginDimension.height)/2);
 		setResizable(false);
 	}
 	
@@ -119,6 +122,7 @@ public class LoginDialog extends JDialog {
 				client.pClient.os.println("login~" + username + "~" + password);
 				client.pClient.os.flush();
 				passwordField.setText("");
+				state = 1;
 				//new Player的操作放在了JungleSpeedClient中，因为只有在登录成功消息接收后才能构造该类
 				/*ImageIcon icon = new ImageIcon("/Users/liutongtong/Pictures/logo.png");
 				client.player = new Player(icon, "tt", 100);*/
@@ -133,5 +137,9 @@ public class LoginDialog extends JDialog {
 			setVisible(false);
 			client.registerDialog.setVisible(true);
 		}
+	}
+
+	public int getState() {
+		return state;
 	}
 }

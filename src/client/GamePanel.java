@@ -2,6 +2,7 @@ package client;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Image;
 import java.awt.Graphics;
 import java.awt.MediaTracker;
@@ -9,15 +10,16 @@ import java.awt.MediaTracker;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
-import com.sun.security.auth.NTDomainPrincipal;
-
 @SuppressWarnings("serial")
 public class GamePanel extends JPanel {
-	static final int GAME_WIDTH = 800;
-	static final int GAME_HEIGHT = 600;
-	static final int INTEVAL = 40;
-	static final int TEXT_INTEVAL = 5;
-	static final Color BACKGROUND_COLOR = new Color(46,110,163);
+	static int GAME_WIDTH = 800;
+	static int GAME_HEIGHT = 600;
+	final static int INTEVAL = 40;
+	final static int TEXT_INTEVAL = 12;
+	final static Color BACKGROUND_COLOR = new Color(46,110,163);
+	final static Color TEXT_COLOR = new Color(255, 255, 255);
+	final static Font NAME_FONT = new Font("SimSun", Font.BOLD, 14);
+	final static Font NUM_FONT = new Font("SimSun", Font.PLAIN, 12);
 	
 	Client client;
 	GameControl game;
@@ -34,9 +36,7 @@ public class GamePanel extends JPanel {
 	}
 	
 	public void init() {
-		setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		setPreferredSize(new Dimension(GAME_WIDTH, GAME_HEIGHT));
-		setBackground(BACKGROUND_COLOR);
 		loadResources();
 	}
 	
@@ -49,7 +49,7 @@ public class GamePanel extends JPanel {
 		gameTracker.addImage(logo0, 0);
 		gameTracker.addImage(logo1, 0);
 		for (int i = 0; i <= cardNum; i++) {
-			cards[i] = getToolkit().getImage(resFolder + i + ".jpg");
+			cards[i] = getToolkit().getImage(cardFolder + i + ".jpg");
 			gameTracker.addImage(cards[i], 0);
 		}
 		
@@ -60,7 +60,7 @@ public class GamePanel extends JPanel {
 		}
 	}
 	
-	public void paintComponent(Graphics g) {
+	public void paint(Graphics g) {
 		drawBackground(g);
 		drawMyPlayer(g);
 		drawOtherPlayers(g);
@@ -72,6 +72,10 @@ public class GamePanel extends JPanel {
 		int height, width;
 		width = logo0.getWidth(null);
 		height = logo0.getHeight(null);
+		Color oldColor = g.getColor();
+		g.setColor(BACKGROUND_COLOR);
+		g.fillRect(5, 5, GAME_WIDTH - 10, GAME_HEIGHT - 10);
+		g.setColor(oldColor);
 		g.drawImage(logo0, (GAME_WIDTH - width) / 2, (GAME_HEIGHT - height) / 2, 
 				width, height, null);
 	}
@@ -88,9 +92,15 @@ public class GamePanel extends JPanel {
 		height = logo1.getHeight(null);
 		x = (GAME_WIDTH - width) / 2;
 		y = (GAME_HEIGHT - height) / 2;
-		g.drawImage(logo0, x, y, width, height, null);
+		g.drawImage(logo1, x, y, width, height, null);
+		Color oldColor = g.getColor();
+		g.setColor(TEXT_COLOR);
+		Font oldFont = g.getFont();
+		g.setFont(NUM_FONT);
 		drawCenterString(g, "牌数: " + game.middleNum, 
 				x + width/2, y + height + TEXT_INTEVAL);
+		g.setColor(oldColor);
+		g.setFont(oldFont);
 	}
 	
 	public void drawMyPlayer(Graphics g) {
@@ -101,11 +111,17 @@ public class GamePanel extends JPanel {
 		x = GAME_WIDTH/2 - INTEVAL/2 - width;
 		y = GAME_HEIGHT - INTEVAL - height;
 		g.drawImage(cards[game.myCard], x, y, width, height, null);
-		drawCenterString(g, "正面: ", x + width/2, y + height + TEXT_INTEVAL);
+		Color oldColor = g.getColor();
+		g.setColor(TEXT_COLOR);
+		Font oldFont = g.getFont();
+		g.setFont(NUM_FONT);
+		drawCenterString(g, "正面: " + game.myFrontNum, x + width/2, y + height + TEXT_INTEVAL);
 		x = GAME_WIDTH/2 + INTEVAL/2;
 		y = GAME_HEIGHT - INTEVAL - height;
 		g.drawImage(cards[cardNum], x, y, width, height, null);
-		drawCenterString(g, "正面: ", x + width/2, y + height + TEXT_INTEVAL);
+		drawCenterString(g, "反面: " + game.myBackNum, x + width/2, y + height + TEXT_INTEVAL);
+		g.setColor(oldColor);
+		g.setFont(oldFont);
 	}
 	
 	final static int[][] PLAYER_POSITION = {
@@ -119,9 +135,6 @@ public class GamePanel extends JPanel {
 		{1, 2, 3, 4 ,5 ,6, 7}
 		};
 	public void drawOtherPlayers(Graphics g) {
-		int height, width;
-		width = cards[0].getWidth(null);
-		height = cards[0].getHeight(null);
 		int[] pos = PLAYER_POSITION[game.playersNum];
 		for (int i = 0; i < game.playersNum; i++) {
 			drawSinglePlayer(g, i, pos[i]);
@@ -173,10 +186,17 @@ public class GamePanel extends JPanel {
 			break;
 		}
 		g.drawImage(cards[game.otherCard[player]], x, y, width, height, null);
+		Color oldColor = g.getColor();
+		g.setColor(TEXT_COLOR);
+		Font oldFont = g.getFont();
+		g.setFont(NUM_FONT);
 		drawCenterString(g, "正" + game.otherFrontNum[player] + "反" + game.otherBackNum[player],
 			x + width/2, y + height + TEXT_INTEVAL);
+		g.setFont(NAME_FONT);
 		drawCenterString(g, game.playersName[player],
-				x + width/2, y - g.getFontMetrics().getHeight());
+				x + width/2, y - NAME_FONT.getSize() + 10);
+		g.setColor(oldColor);
+		g.setFont(oldFont);
 	}
 	
 	public void drawInfo(Graphics g) {

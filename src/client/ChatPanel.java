@@ -21,8 +21,8 @@ import javax.swing.text.StyledDocument;
 
 @SuppressWarnings("serial")
 public class ChatPanel extends JPanel {
-	static final int CHAT_WIDTH = PlayersPanel.TABLE_WIDTH;
-	static final int CHAT_HEIGHT = GamePanel.GAME_HEIGHT - PlayersPanel.TABLE_HEIGHT;
+	final static int CHAT_WIDTH = PlayersPanel.TABLE_WIDTH;
+	final static int CHAT_HEIGHT = GamePanel.GAME_HEIGHT - PlayersPanel.TABLE_HEIGHT;
 	
 	Client client;
 	
@@ -64,13 +64,16 @@ public class ChatPanel extends JPanel {
 		
 		scrollPane = new JScrollPane(messagePane);
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		scrollPane.setPreferredSize(new Dimension(CHAT_WIDTH, CHAT_HEIGHT));
-		this.add(scrollPane);
-		this.add(Box.createVerticalStrut(5));
 		
 		inputField = new JTextField();
 		inputField.setBorder(BorderFactory.createLineBorder(Color.black, 1));
 		inputField.addActionListener(new inputListener());
+		
+		scrollPane.setPreferredSize(new Dimension(CHAT_WIDTH, 
+				CHAT_HEIGHT - labelPanel.getPreferredSize().height
+							- inputField.getPreferredSize().height
+							- getInsets().top - getInsets().bottom));
+		this.add(scrollPane);
 		this.add(inputField);
 	}
 	

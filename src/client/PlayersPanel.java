@@ -39,7 +39,6 @@ public class PlayersPanel extends JPanel {
 	public PlayersPanel(Client client) {
 		this.client = client;
 		init();
-		setSize(200, 300);
 	}
 	
 	public void init() {
@@ -87,7 +86,8 @@ public class PlayersPanel extends JPanel {
 		col = playerTable.getColumn(columnName[2]);
 		col.setPreferredWidth(SCORE_WIDTH);
 		scrollPane.setPreferredSize(new Dimension(TABLE_WIDTH, 
-				TABLE_HEIGHT - labelPanel.getHeight()));
+				TABLE_HEIGHT - labelPanel.getPreferredSize().height
+				 			 - getInsets().top - getInsets().bottom));
 		
 		this.add(scrollPane);
 	}
