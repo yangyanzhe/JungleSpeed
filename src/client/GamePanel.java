@@ -248,7 +248,7 @@ public class GamePanel extends JPanel {
 			drawSingleButton(g, label, READY_BUTTON_X, READY_BUTTON_Y);
 		} else if (game.state == 1) {
 			label = "取消";
-			CANCEL_BUTTON_X = CANCEL_BUTTON_X - BUTTON_INTEVAL - BUTTON_BORDER*4 - g.getFontMetrics().stringWidth(label);
+			CANCEL_BUTTON_X = LEAVE_BUTTON_X - BUTTON_INTEVAL - BUTTON_BORDER*4 - g.getFontMetrics().stringWidth(label);
 			CANCEL_BUTTON_Y = LEAVE_BUTTON_Y;
 			drawSingleButton(g, label, CANCEL_BUTTON_X, CANCEL_BUTTON_Y);
 		} else {	

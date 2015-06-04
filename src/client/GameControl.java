@@ -33,14 +33,5 @@ public class GameControl {
 			otherFrontNum[i] = 0;
 			otherBackNum[i] = 0;
 		}
-		
-		playersNum = MAX_PLAYER_NUM - 1;
-		playersName[0] = "杨妍喆";
-		playersName[1] = "杨妍喆";
-		playersName[2] = "杨妍喆";
-		playersName[3] = "杨妍喆";
-		playersName[4] = "杨妍喆";
-		playersName[5] = "杨妍喆";
-		playersName[6] = "杨妍喆";
 	}
 }

@@ -190,6 +190,54 @@ public class Game {
 				_sockets[i].os.println("turncard~" + currentGamer + "~" + currentCard);
 				_sockets[i].os.flush();
 			}
+			
+			for (int i = 0; i < gamerNumber; i++) {
+				_sockets[i].os.println("setplayersNum~" + (gamerNumber - 1));
+				_sockets[i].os.flush();
+				
+				String playersNameSet = "";
+				String otherCardSet = "";
+				String otherFrontNumSet = "";
+				String otherBackNumSet = "";
+				for (int j = 0; j < gamerNumber; j++) {
+					if (j != i) {
+						playersNameSet = playersNameSet + _sockets[j].ID + "~";
+						otherCardSet = otherCardSet + gamers[j].cardShown + "~";
+						otherFrontNumSet = otherFrontNumSet + gamers[j].upCount + "~";
+						otherBackNumSet = otherBackNumSet + 
+								(gamers[j].downTail - gamers[j].downHead) + "~";
+					}
+				}
+				playersNameSet = playersNameSet.substring(0, playersNameSet.length()-1);
+				otherCardSet = otherCardSet.substring(0, otherCardSet.length()-1);
+				otherFrontNumSet = otherFrontNumSet.substring(0, otherFrontNumSet.length()-1);
+				otherBackNumSet = otherBackNumSet.substring(0, otherBackNumSet.length()-1);
+				
+				_sockets[i].os.println("setplayersName~" + playersNameSet);
+				_sockets[i].os.flush();
+				
+				_sockets[i].os.println("setmiddleNum~" + totemCardsNumber);
+				_sockets[i].os.flush();
+				
+				_sockets[i].os.println("setmyCard~" + gamers[i].cardShown);
+				_sockets[i].os.flush();
+				
+				_sockets[i].os.println("setmyFrontNum~" + gamers[i].upCount);
+				_sockets[i].os.flush();
+				
+				_sockets[i].os.println("setmyBackNum~" + 
+						(gamers[i].downTail - gamers[i].downHead));
+				_sockets[i].os.flush();
+				
+				_sockets[i].os.println("setotherCard~" + otherCardSet);
+				_sockets[i].os.flush();
+				
+				_sockets[i].os.println("setotherFrontNum~" + otherFrontNumSet);
+				_sockets[i].os.flush();
+				
+				_sockets[i].os.println("setotherBackNum~" + otherBackNumSet);
+				_sockets[i].os.flush();
+			}
 		}
 		else{
 			boolean outerArrow = false;
