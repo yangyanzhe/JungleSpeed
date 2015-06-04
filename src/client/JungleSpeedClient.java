@@ -1,5 +1,6 @@
 package client;
 
+import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -61,6 +62,7 @@ class ClientThread extends Thread {
 					//返回用户名，积分，头像给这里，构造一个player对象(Client类中的)
 					//loginreveived~用户名~积分~头像路径
 					System.out.println("登录成功！");
+					pClient.app.loginDialog.infoLabel.setText("");
 					ImageIcon icon = new ImageIcon(splitStrings[3]);
 					int score = Integer.parseInt(splitStrings[2]);
 					pClient.app.player = new Player(icon, splitStrings[1], score);
@@ -107,7 +109,7 @@ class ClientThread extends Thread {
 						System.out.println("玩家" + giver + "把自己翻开的牌给了玩家" + receiver + "!");
 					}
 				}
-				else if (splitStrings[0].equals("grabresult")) {
+				else if (splitStrings[0].equals("gameover")) {
 					System.out.println("Game Over!");
 				}
 				else if (splitStrings[0].equals("tie")) {
@@ -122,18 +124,27 @@ class ClientThread extends Thread {
 				}
 				else if (splitStrings[0].equals("loginrejected")) {
 					System.out.println("登录失败！用户名或密码错误！");
+					pClient.app.loginDialog.infoLabel.setText("用户名或密码错误");
+					pClient.app.loginDialog.infoLabel.setForeground(Color.RED);
 				}
 				else if (splitStrings[0].equals("registersuccess")) {
+					//registersuccess~用户名~密码
 					System.out.println("注册成功");
-					pClient.app.gamehall_panel.setVisible(false);
+					/*pClient.app.gamehall_panel.setVisible(false);
 					pClient.app.loginDialog.setVisible(false);
-					pClient.app.registerDialog.setVisible(true);
+					pClient.app.registerDialog.setVisible(true);*/
+					pClient.app.registerDialog.infoLabel.setText("注册成功！请登录");
+					pClient.app.registerDialog.infoLabel.setForeground(Color.GREEN);
+					pClient.os.println("login~" + splitStrings[1] + "~" + splitStrings[2]);
+					pClient.os.flush();
 				}
 				else if (splitStrings[0].equals("registerfail")) {
 					System.out.println("注册失败");
 					pClient.app.gamehall_panel.setVisible(false);
 					pClient.app.loginDialog.setVisible(false);
 					pClient.app.registerDialog.setVisible(true);
+					pClient.app.registerDialog.infoLabel.setText("用户名已存在！");
+					pClient.app.registerDialog.infoLabel.setForeground(Color.RED);
 				}
 				else if (splitStrings[0].equals("tellseatinfo")) {
 					//命令格式是tellseatinfo~用户名~桌子号~座位号
@@ -151,6 +162,8 @@ class ClientThread extends Thread {
 				}
 				else if (splitStrings[0].equals("loginagain")) {
 					System.out.println("重复登录，登录失败！");
+					pClient.app.loginDialog.infoLabel.setText("该用户已登录！");
+					pClient.app.loginDialog.infoLabel.setForeground(Color.RED);
 				}
 				else if (splitStrings[0].equals("chattoclient")) {
 					//chattoclient~username~avatar~msg

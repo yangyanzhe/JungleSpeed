@@ -13,15 +13,11 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.TreeSet;
 import java.util.Vector;
 
-import javax.xml.stream.events.EndDocument;
 
 public class JungleSpeedServer {
 	public static void main(String[] args) {
@@ -49,6 +45,7 @@ class SOCKET {
 		this.socket=socket;
 		No = -1;
 		seatInTable = -1;
+		ID = null;
 		try {
 			is=new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			os = new PrintWriter(socket.getOutputStream());
@@ -93,8 +90,11 @@ class ClientListener extends Thread	{
 			}
 			catch(IOException e) {
 				System.out.println("一个用户断线了"+_socket.socket);
-				Information info = new Information(_socket, "offline");
-				messenger.mq.put(info);
+				if (_socket.ID != null) {
+					//若该用户还没有登录，就不把他的消息给其他所有客户端了
+					Information info = new Information(_socket, "offline");
+					messenger.mq.put(info);
+				}
 				this.stop();
 			}
 		}
@@ -424,7 +424,6 @@ class UserManager{
 	}
 	
 	private boolean readFileByLines(){
-		File inFile = new File(fileName);
 		try {
 			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(
 					new FileInputStream(fileName), "UTF-8"));
@@ -666,11 +665,11 @@ class Messenger extends Thread {
 					else if (splitStrings[0].equals("register")) {
 						//注册命令格式为register~用户名~密码
 						boolean flag = false;
-						//TODO 添加头像的对话框？默认头像？
+						//TODO 默认头像？
 						flag = userManager.add(splitStrings[1], splitStrings[2], "res/a.jpg");
 						if (flag) {
 							System.out.println("新用户" + splitStrings[1] + "注册成功！");
-							_socket.os.println("registersuccess");
+							_socket.os.println("registersuccess~" + splitStrings[1] + "~" + splitStrings[2]);
 							_socket.os.flush();
 							userManager.outputToFile();
 						}
