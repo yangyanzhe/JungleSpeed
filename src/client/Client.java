@@ -106,8 +106,23 @@ public class Client extends JFrame {
 	
 	public void run() {
 		setVisible(true);
-		loginDialog.setVisible(true);
-		System.out.println(loginDialog.getState());
+		while (true) {
+			loginDialog.display();;
+			if (loginDialog.getState() == 0) {
+				System.exit(0);
+			} else if (loginDialog.getState() == 1) {
+				break;
+			}
+			registerDialog.display();
+			if (loginDialog.getState() == 0) {
+				System.exit(0);
+			} else if (loginDialog.getState() == 1) {
+				break;
+			}
+		}
+		
+		//System.out.println(loginDialog.getState());
+		
 	}
 	
 	/*public static void main(String[] args) {
