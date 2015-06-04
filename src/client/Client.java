@@ -98,6 +98,7 @@ public class Client extends JFrame {
 		registerDialog = new RegisterDialog(this);
 		
 		this.pClient = pClient;
+		this.setDefaultCloseOperation(HIDE_ON_CLOSE);
 	}
 	
 	public void run() {
