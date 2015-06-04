@@ -18,7 +18,6 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.Vector;
 
-//TODO 同一个位置不能加多个人
 public class JungleSpeedServer {
 	public static void main(String[] args) {
 		serve();
@@ -92,7 +91,6 @@ class ClientListener extends Thread	{
 				System.out.println("一个用户断线了"+_socket.socket);
 				if (_socket.ID != null) {
 					//若该用户还没有登录，就不把他的消息给其他所有客户端了
-					System.out.println("掉线啊！！！！！！！");
 					Information info = new Information(_socket, "offline");
 					messenger.mq.put(info);
 				}
@@ -593,12 +591,20 @@ class Messenger extends Thread {
 								_socket.seatInTable = seatPos;
 								_socket.os.println("jointablesuccess");
 								_socket.os.flush();
+								
+								//可以把新加入的信息告诉所有客户端让他渲染，不过若加入的动作太过频繁还是不传好
+								int n = SOCKETList.size();
+								for (int i = 0; i < n; i++) {
+									//命令格式是tellseatinfo~用户名~桌子号~座位号
+									SOCKET temp = (SOCKET)SOCKETList.get(i);
+									temp.os.println("tellseatinfo~" + _socket.ID + "~" + tableNum + "~" + seatPos);
+									temp.os.flush();
+								}
 							}
 							else {
 								_socket.os.println("jointablefail");
 								_socket.os.flush();
 							}
-							//TODO 可以把新加入的信息告诉所有客户端让他渲染，不过若加入的动作太过频繁还是不传好
 						}
 						else {
 							System.out.println("jointable命令参数错误！");
@@ -697,7 +703,6 @@ class Messenger extends Thread {
 							desks[_socket.No].remove(_socket);
 						}
 						User t = userManager.findByUsername(_socket.ID);
-						System.out.println(t.getUsername());
 						t.isLogIn = false;
 					}
 					else if (splitStrings[0].equals("chattoserver")) {
