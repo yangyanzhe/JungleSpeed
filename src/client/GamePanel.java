@@ -298,6 +298,7 @@ public class GamePanel extends JPanel {
 			int xPos = e.getX();
 			int yPos = e.getY();
 			
+			requestFocus();
 			if (isClicked(xPos, yPos, LEAVE_BUTTON_X, LEAVE_BUTTON_Y, 72, 48)) {
 				// TODO: 点击离开按钮
 				System.out.println("yes");

@@ -56,9 +56,7 @@ public class Client extends JFrame {
 //		hallPanel = new HallPanel(this);
 		
 		gamehall_panel = new GameHall(this);
-		gamehall_panel.setSize(800,600);
-//		gamehall_panel.setLocation(0,0);
-//		panelContainer.add(gamehall_panel, cHallPanel);
+		panelContainer.add(gamehall_panel, cHallPanel);
 		
 		gamePanel = new GamePanel(this);
 		panelContainer.add(gamePanel, cHallPanel);
@@ -95,7 +93,7 @@ public class Client extends JFrame {
 		Dimension clientDimension = getPreferredSize();
 		setLocation((screenDimension.width-clientDimension.width)/2, 
 					(screenDimension.height-clientDimension.height)/2);
-//		setResizable(false);
+		setResizable(false);
 		
 		loginDialog = new LoginDialog(this);
 		registerDialog = new RegisterDialog(this);
