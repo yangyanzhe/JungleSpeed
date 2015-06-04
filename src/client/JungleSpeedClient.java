@@ -6,6 +6,8 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
 
+import javax.swing.ImageIcon;
+
 public class JungleSpeedClient {
 	int port;
 	String ip;
@@ -56,7 +58,12 @@ class ClientThread extends Thread {
 				String[] splitStrings = s.split("~");
 				
 				if (splitStrings[0].equals("loginreveived")) {
+					//返回用户名，积分，头像给这里，构造一个player对象(Client类中的)
+					//loginreveived~用户名~积分~头像路径
 					System.out.println("登录成功！");
+					ImageIcon icon = new ImageIcon(splitStrings[3]);
+					int score = Integer.parseInt(splitStrings[2]);
+					pClient.app.player = new Player(icon, splitStrings[1], score);
 					pClient.app.loginDialog.setVisible(false);
 					pClient.app.registerDialog.setVisible(false);
 					pClient.app.gamehall_panel.setVisible(true);
@@ -111,7 +118,7 @@ class ClientThread extends Thread {
 					String newUser = splitStrings[1];
 					int score = Integer.parseInt(splitStrings[2]);
 					System.out.println("用户" + newUser + "进入游戏大厅，分数为" + score);
-					pClient.app.playerListPanel.addPlayer(null, newUser, score);
+					pClient.app.playersPanel.addPlayer(null, newUser, score);
 				}
 				else if (splitStrings[0].equals("loginrejected")) {
 					System.out.println("登录失败！用户名或密码错误！");

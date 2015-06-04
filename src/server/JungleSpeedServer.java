@@ -212,12 +212,14 @@ class User {
 	private String password;
 	private int score = 0;
 	public boolean isLogIn = false;
+	private String avatar = "";
 	
-	public User(String username, String password) {
+	public User(String username, String password, String avatar) {
 		this.username = username;
 		this.password = password;
 		this.score = 0;
 		this.isLogIn = false;
+		this.avatar = avatar;
 	}
 	
 	public String getUsername() {
@@ -233,16 +235,25 @@ class User {
 	}
 	
 	public String toString(){
-		return username + " " + password + " " + " " + score + "\n";
+		return username + " " + password + " " + score + " " + avatar + "\n";
 	}
 	
 	public void setScore(int s) {
 		this.score = s;
 	}
 	
+	public String getAvatar() {
+		return this.avatar;
+	}
+	
+	public void setAvatar(String a) {
+		this.avatar = a;
+	}
+	
 	public User copy() {
-		User r = new User(username, password);
+		User r = new User(username, password, avatar);
 		r.setScore(score);
+		r.isLogIn = this.isLogIn;
 		return r;
 	}
 }
@@ -283,14 +294,14 @@ class UserManager{
 		}
 	}
 	
-	public boolean add(String username, String password){
+	public boolean add(String username, String password, String avatar){
 		User ifExist = findByUsername(username);
 		if (ifExist != null){
 			System.out.println("Add new user failed. Username has existed.");
 			return false;
 		}
 			
-		User user = new User(username, password);
+		User user = new User(username, password, avatar);
 		boolean ifSucceed = add(user);
 		if (! ifSucceed){
 			System.out.println("Add new user failed. Unknown reason.");
@@ -368,7 +379,7 @@ class UserManager{
 		return ifSucceed;
 	}
 	
-public List<User> rtrRankList(){
+	public List<User> rtrRankList(){
 		
 		List<User> list = new ArrayList<User>();
 		for (User user : userSet){
@@ -426,7 +437,7 @@ public List<User> rtrRankList(){
 	            //debug 
 	            //System.out.println(strList[0] + "~" + strList[1] + "~" + strList[2]);
 	            
-	            User user = new User(strList[0], strList[1]);
+	            User user = new User(strList[0], strList[1], strList[3]);
 	            userSet.add(user);
 	        }
 			
@@ -506,7 +517,9 @@ class Messenger extends Thread {
 									System.out.println("重复登录");
 								}
 								else {
-									_socket.os.println("loginreveived");
+									//loginreveived~用户名~积分~头像路径
+									_socket.os.println("loginreveived~" + currentUser.getUsername() + "~"
+											 + currentUser.getScore() + "~" + currentUser.getAvatar());
 									_socket.os.flush();
 									
 									currentUser.isLogIn = true;
@@ -652,7 +665,8 @@ class Messenger extends Thread {
 					else if (splitStrings[0].equals("register")) {
 						//注册命令格式为register~用户名~密码
 						boolean flag = false;
-						flag = userManager.add(splitStrings[1], splitStrings[2]);
+						//TODO 添加头像的对话框？默认头像？
+						flag = userManager.add(splitStrings[1], splitStrings[2], "res/a.jpg");
 						if (flag) {
 							System.out.println("新用户" + splitStrings[1] + "注册成功！");
 							_socket.os.println("registersuccess");

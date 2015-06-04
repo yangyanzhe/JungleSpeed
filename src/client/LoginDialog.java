@@ -95,11 +95,11 @@ public class LoginDialog extends JDialog {
 		public void actionPerformed(ActionEvent e) {
 			String username = usernameField.getText();
 			String password = new String(passwordField.getPassword());
-			// TODO: 判断登陆是否成功
 			client.pClient.os.println("login~" + username + "~" + password);
 			client.pClient.os.flush();
-			ImageIcon icon = new ImageIcon("/Users/liutongtong/Pictures/logo.png");
-			client.player = new Player(icon, "tt", 100);
+			//new Player的操作放在了JungleSpeedClient中，因为只有在登录成功消息接收后才能构造该类
+			/*ImageIcon icon = new ImageIcon("/Users/liutongtong/Pictures/logo.png");
+			client.player = new Player(icon, "tt", 100);*/
 		}
 	}
 	
