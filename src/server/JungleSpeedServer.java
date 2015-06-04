@@ -201,6 +201,9 @@ class Desk extends Game {
 				int j;
 				for (j = i; j < 7; j++) {
 					_sockets[j] = _sockets[j + 1];
+					if(_sockets[j] == null){
+						break;
+					}
 				}
 				_sockets[j] = _socket;
 			}
