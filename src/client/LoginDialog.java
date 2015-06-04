@@ -1,5 +1,6 @@
 package client;
 
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -103,15 +104,26 @@ public class LoginDialog extends JDialog {
 	}
 	
 	class LoginListener implements ActionListener {
+		//TODO 处理未登录就进入
 		public void actionPerformed(ActionEvent e) {
 			String username = usernameField.getText();
 			String password = new String(passwordField.getPassword());
-			client.pClient.os.println("login~" + username + "~" + password);
-			client.pClient.os.flush();
-			passwordField.setText("");
-			//new Player的操作放在了JungleSpeedClient中，因为只有在登录成功消息接收后才能构造该类
-			/*ImageIcon icon = new ImageIcon("/Users/liutongtong/Pictures/logo.png");
-			client.player = new Player(icon, "tt", 100);*/
+			if (username.equals("")) {
+				infoLabel.setText("用户名不能为空！");
+				infoLabel.setForeground(Color.RED);
+			}
+			else if (password.equals("")) {
+				infoLabel.setText("密码不能为空！");
+				infoLabel.setForeground(Color.RED);
+			}
+			else {
+				client.pClient.os.println("login~" + username + "~" + password);
+				client.pClient.os.flush();
+				passwordField.setText("");
+				//new Player的操作放在了JungleSpeedClient中，因为只有在登录成功消息接收后才能构造该类
+				/*ImageIcon icon = new ImageIcon("/Users/liutongtong/Pictures/logo.png");
+				client.player = new Player(icon, "tt", 100);*/
+			}
 		}
 	}
 	

@@ -120,7 +120,19 @@ public class RegisterDialog extends JDialog {
 			String password = new String(passwordField.getPassword());
 			String repassword = new String(repasswordField.getPassword());
 			
-			if (password.equals(repassword)) {
+			if (username.equals("")) {
+				infoLabel.setText("用户名不能为空！");
+				infoLabel.setForeground(Color.RED);
+			}
+			else if (password.equals("")) {
+				infoLabel.setText("密码不能为空！");
+				infoLabel.setForeground(Color.RED);
+			}
+			else if (repassword.equals("")) {
+				infoLabel.setText("密码不能为空！");
+				infoLabel.setForeground(Color.RED);
+			}
+			else if (password.equals(repassword)) {
 				client.pClient.os.println("register~" + username + "~" + password);
 				client.pClient.os.flush();
 			}
