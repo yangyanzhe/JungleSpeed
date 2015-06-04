@@ -124,7 +124,7 @@ public class GameHall extends JPanel implements MouseListener{
 						if(chairs[id] != -1){
 							int x1 = X + (k % 3) * 50 + 3;
 							int y1 = Y + (k / 3) * 50 + 3;
-							g.drawImage(p.player, x1, y1, 43, 43, null);
+							g.drawImage(p.playerImage, x1, y1, 43, 43, null);
 						}
 					} // end loop k
 				} // end loop j

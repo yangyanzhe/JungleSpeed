@@ -1,22 +1,20 @@
 package client;
 
-import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import javax.swing.border.Border;
 
 @SuppressWarnings("serial")
 public class LoginDialog extends JDialog {
@@ -100,6 +98,8 @@ public class LoginDialog extends JDialog {
 			// TODO: 判断登陆是否成功
 			client.pClient.os.println("login~" + username + "~" + password);
 			client.pClient.os.flush();
+			ImageIcon icon = new ImageIcon("/Users/liutongtong/Pictures/logo.png");
+			client.player = new Player(icon, "tt", 100);
 		}
 	}
 	

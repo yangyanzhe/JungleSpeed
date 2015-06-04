@@ -8,12 +8,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
-public class InfoPanel extends JPanel {
-	Client client;
+public class HallPanel extends JPanel {
+Client client;
 	
 	JPanel labelPanel;
 	
-	public InfoPanel(Client client) {
+	public HallPanel(Client client) {
 		this.client = client;
 		init();
 	}
@@ -21,6 +21,6 @@ public class InfoPanel extends JPanel {
 	public void init() {
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		setBorder(BorderFactory.createLineBorder(Color.blue, 1));
-		add(new JLabel("info"));
+		add(new JLabel("hall"));
 	}
 }

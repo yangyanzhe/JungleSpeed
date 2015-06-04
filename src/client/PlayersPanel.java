@@ -2,6 +2,7 @@ package client;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
 
@@ -21,18 +22,23 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
 @SuppressWarnings("serial")
-public class PlayerTablePanel extends JPanel {
+public class PlayersPanel extends JPanel {
+	static final int iconWidth = 50, nameWidth = 150, scoreWidth = 100;
+	static final int totalWidth = iconWidth + nameWidth + scoreWidth;
+	static final int totalHeight = 300;
+	
 	Client client;
 	
 	JPanel labelPanel;
 	PlayerTableModel playerModel;
 	SortedTableModel sortedPlayerModel;
 	JTable playerTable;
-	JScrollPane tablePane;
+	JScrollPane scrollPane;
 	
-	public PlayerTablePanel(Client client) {
+	public PlayersPanel(Client client) {
 		this.client = client;
 		init();
+		setSize(200, 300);
 	}
 	
 	public void init() {
@@ -51,14 +57,6 @@ public class PlayerTablePanel extends JPanel {
 		playerTable = new JTable(playerModel);
 //		sortedPlayerModel = new SortedTableModel(playerTable.getModel());
 //		playerTable.setModel(sortedPlayerModel);
-		TableColumn col;
-		col = playerTable.getColumn(columnName[0]);
-		col.setMaxWidth(50);
-		col.setResizable(false);
-		col = playerTable.getColumn(columnName[1]);
-		col.setMinWidth(150);
-		col = playerTable.getColumn(columnName[2]);
-		col.setMinWidth(100);
 		
 //		playerTable.getTableHeader().addMouseListener(new MouseAdapter() {
 //			public void mouseClicked(MouseEvent event) {
@@ -77,9 +75,19 @@ public class PlayerTablePanel extends JPanel {
 		playerTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		playerTable.getTableHeader().setReorderingAllowed(false);
 		
-		tablePane = new JScrollPane(playerTable);
-		tablePane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		this.add(tablePane);
+		scrollPane = new JScrollPane(playerTable);
+		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		
+		TableColumn col;
+		col = playerTable.getColumn(columnName[0]);
+		col.setPreferredWidth(iconWidth);
+		col = playerTable.getColumn(columnName[1]);
+		col.setPreferredWidth(nameWidth);
+		col = playerTable.getColumn(columnName[2]);
+		col.setPreferredWidth(scoreWidth);
+		scrollPane.setPreferredSize(new Dimension(totalWidth, totalHeight));
+		
+		this.add(scrollPane);
 		
 		ImageIcon icon = new ImageIcon("/Users/liutongtong/Pictures/logo.png");
 		ImageIcon icon2 = new ImageIcon("/Users/liutongtong/Pictures/Conan1.jpg");
