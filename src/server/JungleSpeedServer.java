@@ -88,12 +88,12 @@ class ClientListener extends Thread	{
 			}
 			try {
 				String content = _socket.is.readLine();
-				Information info = new Information(_socket,content);
+				Information info = new Information(_socket, content);
 				messenger.mq.put(info);
 			}
 			catch(IOException e) {
 				System.out.println("一个用户断线了"+_socket.socket);
-				Information info = new Information(_socket,"offli:");
+				Information info = new Information(_socket, "offline");
 				messenger.mq.put(info);
 				this.stop();
 			}
@@ -189,17 +189,35 @@ class Desk extends Game {
 		}
 		return false;
 	}
+	
+	public void remove(SOCKET _socket) {
+		//TODO 要处理有人在游戏过程当中强退游戏后把他的牌都放在图腾下面，游戏继续。进入桌子里面退出还需要测试
+		// 游戏中有人强退游戏 或是 游戏还没开始时有人退出桌子
+		int i;
+		for (i = 0; i < 8; i++) {
+			if (_sockets[i].equals(_socket)) {
+				int j;
+				for (j = i; j < 7; j++) {
+					_sockets[j] = _sockets[j + 1];
+				}
+				_sockets[j] = null;
+			}
+		}
+		gamerNumber--;
+	}
 }
 
 class User {
 	private String username;
 	private String password;
 	private int score = 0;
+	public boolean isLogIn = false;
 	
 	public User(String username, String password) {
 		this.username = username;
 		this.password = password;
 		this.score = 0;
+		this.isLogIn = false;
 	}
 	
 	public String getUsername() {
@@ -320,7 +338,7 @@ class UserManager{
 		return userSet.remove(user);
 	}
 	
-	private User findByUsername(String username) {
+	public User findByUsername(String username) {
 		for (User user : userSet){
 			if (user.getUsername().equals(username)){
 				return user;
@@ -482,39 +500,53 @@ class Messenger extends Thread {
 							System.out.println("server get login info!");
 							User currentUser = userManager.verify(splitStrings[1], splitStrings[2]);
 							if (currentUser != null) {
-								_socket.os.println("loginreveived");
-								_socket.os.flush();
-								
-								System.out.println("通过验证,登录成功");
-								SOCKETList.add(_socket);
-								_socket.ID = currentUser.getUsername();
-								_socket.No = -1;
-								_socket.seatInTable = -1;
-								_socket.Grade = currentUser.getScore();
-								
-								int n = SOCKETList.size();
-								for (int i = 0; i < n; i++) {
-									SOCKET temp = (SOCKET)SOCKETList.get(i);
-									temp.os.println("newgamer~" + currentUser.getUsername() + "~" + currentUser.getScore());
-									temp.os.flush();
+								if (currentUser.isLogIn) {
+									_socket.os.println("loginagain");
+									_socket.os.flush();
+									System.out.println("重复登录");
 								}
-								
-								//把游戏大厅其他已加入桌子的人的位置信息告诉客户端让他渲染
-								for (int i = 0; i < n; i++) {
-									//命令格式是tellseatinfo~用户名~桌子号~座位号
-									SOCKET temp = (SOCKET)SOCKETList.get(i);
-									if (temp.No >= 0 && temp.seatInTable >= 0) {
-										_socket.os.println("tellseatinfo~" + temp.ID + "~" + temp.No + "~" + temp.seatInTable);
-										_socket.os.flush();
+								else {
+									_socket.os.println("loginreveived");
+									_socket.os.flush();
+									
+									currentUser.isLogIn = true;
+									
+									System.out.println("通过验证,登录成功");
+									SOCKETList.add(_socket);
+									_socket.ID = currentUser.getUsername();
+									_socket.No = -1;
+									_socket.seatInTable = -1;
+									_socket.Grade = currentUser.getScore();
+									
+									int n = SOCKETList.size();
+	
+									//把游戏大厅其他已加入桌子的人的位置信息告诉客户端让他渲染
+									for (int i = 0; i < n; i++) {
+										//命令格式是tellseatinfo~用户名~桌子号~座位号
+										SOCKET temp = (SOCKET)SOCKETList.get(i);
+										if (!_socket.equals(temp)){
+											_socket.os.println("newgamer~" + temp.ID + "~" + temp.Grade);
+											_socket.os.flush();
+										}
+										if (temp.No >= 0 && temp.seatInTable >= 0) {
+											_socket.os.println("tellseatinfo~" + temp.ID + "~" + temp.No + "~" + temp.seatInTable);
+											_socket.os.flush();
+										}
 									}
-								}
-								
-								//告诉客户端哪些桌子已经开始了游戏
-								//tablegamestart~桌子号
-								for (int i = 0; i < maxTable; i++) {
-									if (desks[i].isReady) {
-										_socket.os.println("tablegamestart~" + i);
-										_socket.os.flush();
+									
+									for (int i = 0; i < n; i++) {
+										SOCKET temp = (SOCKET)SOCKETList.get(i);
+										temp.os.println("newgamer~" + currentUser.getUsername() + "~" + currentUser.getScore());
+										temp.os.flush();
+									}
+									
+									//告诉客户端哪些桌子已经开始了游戏
+									//tablegamestart~桌子号
+									for (int i = 0; i < maxTable; i++) {
+										if (desks[i].isReady) {
+											_socket.os.println("tablegamestart~" + i);
+											_socket.os.flush();
+										}
 									}
 								}
 							}
@@ -632,6 +664,21 @@ class Messenger extends Thread {
 							_socket.os.println("registerfail");
 							_socket.os.flush();
 						}
+					}
+					else if (splitStrings[0].equals("offline")) {
+						//用户下线信息，发给客户端的格式为：clientoffline~username
+						SOCKETList.remove(_socket);
+						int n = SOCKETList.size();
+						for (int i = 0; i < n; i++) {
+							SOCKET temp = (SOCKET)SOCKETList.get(i);
+							temp.os.println("clientoffline~" + _socket.ID);
+							temp.os.flush();
+						}
+						if (_socket.No != -1) {
+							desks[_socket.No].remove(_socket);
+						}
+						User t = userManager.findByUsername(_socket.ID);
+						t.isLogIn = false;
 					}
 				}
 			} catch (Exception e) {

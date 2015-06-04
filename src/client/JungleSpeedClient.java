@@ -111,6 +111,7 @@ class ClientThread extends Thread {
 					String newUser = splitStrings[1];
 					int score = Integer.parseInt(splitStrings[2]);
 					System.out.println("用户" + newUser + "进入游戏大厅，分数为" + score);
+					pClient.app.playerListPanel.addPlayer(null, newUser, score);
 				}
 				else if (splitStrings[0].equals("loginrejected")) {
 					System.out.println("登录失败！用户名或密码错误！");
@@ -136,6 +137,15 @@ class ClientThread extends Thread {
 					//tablegamestart~桌子号
 					System.out.println(splitStrings[1] + "号桌子已经开始了游戏，不能加入!");
 				}
+				else if (splitStrings[0].equals("clientoffline")) {
+					//用户下线信息，发给客户端的格式为：clientoffline~username
+					System.out.println("用户" + splitStrings[1] + "下线了！");
+					//TODO 根据新的接口来删用户
+				}
+				else if (splitStrings[0].equals("loginagain")) {
+					System.out.println("重复登录，登录失败！");
+				}
+				//TODO 是否添加登出功能？
 			} catch (Exception e) {
 			}
 		}
