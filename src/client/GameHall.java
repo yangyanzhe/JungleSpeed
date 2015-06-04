@@ -60,24 +60,24 @@ public class GameHall extends JPanel implements MouseListener{
 		// chair 
 		// down: 0; left: 1; up:2; right:3
 		for(int i = 0; i<6; i++){
-			String str_chair = "res\\chair" + i + ".png";
+			String str_chair = "res/chair" + i + ".png";
 			chairsImg[i] =  getToolkit().getImage(str_chair);
 		}
 		
 		// player
 		for(int i = 0; i < 4; i++){
 			for(int j = 0; j < 4; j++){
-				String str_player = "res\\player" + i + j + ".png";
+				String str_player = "res/player" + i + j + ".png";
 				playersImg[i*4 + j] = getToolkit().getImage(str_player);
 			}
 		}
 		
 		// table
-		String str_table = "res\\table.png";
+		String str_table = "res/table.png";
 		tableImg = getToolkit().getImage(str_table);
 		
 		// background
-		String str_back = "res\\hall_background.jpg";
+		String str_back = "res/hall_background.jpg";
 		hallImg = getToolkit().getImage(str_back);
 		
 		
