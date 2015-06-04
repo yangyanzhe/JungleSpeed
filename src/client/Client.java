@@ -1,10 +1,12 @@
 package client;
 
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.MediaTracker;
+import java.awt.Toolkit;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -119,6 +121,10 @@ public class Client extends JFrame {
 		c.add(panelContainer);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		pack();
+		Dimension screenDimension = Toolkit.getDefaultToolkit().getScreenSize();
+		Dimension clientDimension = getPreferredSize();
+		setLocation((screenDimension.width-clientDimension.width)/2, 
+					(screenDimension.height-clientDimension.height)/2);
 		setResizable(false);
 		
 		loginDialog = new LoginDialog(this);
