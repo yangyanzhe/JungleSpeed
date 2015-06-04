@@ -1,8 +1,11 @@
 package client;
 
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Toolkit;
+
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -53,12 +56,12 @@ public class Client extends JFrame {
 //		hallPanel = new HallPanel(this);
 		
 		gamehall_panel = new GameHall(this);
-		gamehall_panel.setSize(800,700);
+		gamehall_panel.setSize(800,600);
 //		gamehall_panel.setLocation(0,0);
-		panelContainer.add(gamehall_panel, cHallPanel);
+//		panelContainer.add(gamehall_panel, cHallPanel);
 		
 		gamePanel = new GamePanel(this);
-//		panelContainer.add(gamePanel, cHallPanel);
+		panelContainer.add(gamePanel, cHallPanel);
 		
 		GridBagConstraints cPlayerListPanel = new GridBagConstraints();
 		cPlayerListPanel.gridx = 3;
@@ -86,7 +89,11 @@ public class Client extends JFrame {
 		c.add(panelContainer);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		pack();
-		setResizable(false);
+		Dimension screenDimension = Toolkit.getDefaultToolkit().getScreenSize();
+		Dimension clientDimension = getPreferredSize();
+		setLocation((screenDimension.width-clientDimension.width)/2, 
+					(screenDimension.height-clientDimension.height)/2);
+//		setResizable(false);
 		
 		loginDialog = new LoginDialog(this);
 		registerDialog = new RegisterDialog(this);
@@ -100,6 +107,7 @@ public class Client extends JFrame {
 	public void run() {
 		setVisible(true);
 		loginDialog.setVisible(true);
+		System.out.println(loginDialog.getState());
 	}
 	
 	/*public static void main(String[] args) {

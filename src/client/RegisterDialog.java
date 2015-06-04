@@ -3,6 +3,7 @@ package client;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -108,9 +109,9 @@ public class RegisterDialog extends JDialog {
 		c.add(panelContainer);
 		pack();
 		Dimension registerDimension = getPreferredSize();
-		Dimension clientDimension = client.getPreferredSize();
-		setLocation((clientDimension.width-registerDimension.width)/2, 
-					(clientDimension.height-registerDimension.height)/2);
+		Dimension screenDimension = Toolkit.getDefaultToolkit().getScreenSize();
+		setLocation((screenDimension.width-registerDimension.width)/2, 
+					(screenDimension.height-registerDimension.height)/2);
 		setResizable(false);
 	}
 	

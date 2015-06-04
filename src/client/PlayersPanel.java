@@ -23,9 +23,10 @@ import javax.swing.table.TableModel;
 
 @SuppressWarnings("serial")
 public class PlayersPanel extends JPanel {
-	static final int iconWidth = 50, nameWidth = 150, scoreWidth = 100;
-	static final int totalWidth = iconWidth + nameWidth + scoreWidth;
-	static final int totalHeight = 300;
+	static final int ICON_WIDTH = 50, NAME_WIDTH = 150, SCORE_WIDTH = 100;
+	static final int TABLE_WIDTH = ICON_WIDTH + NAME_WIDTH + SCORE_WIDTH;
+	static final int TABLE_HEIGHT = GamePanel.GAME_HEIGHT / 2;
+	static final Color BACKGROUND_COLOR = new Color(46,110,163);
 	
 	Client client;
 	
@@ -38,7 +39,6 @@ public class PlayersPanel extends JPanel {
 	public PlayersPanel(Client client) {
 		this.client = client;
 		init();
-		setSize(200, 300);
 	}
 	
 	public void init() {
@@ -80,20 +80,16 @@ public class PlayersPanel extends JPanel {
 		
 		TableColumn col;
 		col = playerTable.getColumn(columnName[0]);
-		col.setPreferredWidth(iconWidth);
+		col.setPreferredWidth(ICON_WIDTH);
 		col = playerTable.getColumn(columnName[1]);
-		col.setPreferredWidth(nameWidth);
+		col.setPreferredWidth(NAME_WIDTH);
 		col = playerTable.getColumn(columnName[2]);
-		col.setPreferredWidth(scoreWidth);
-		scrollPane.setPreferredSize(new Dimension(totalWidth, totalHeight));
+		col.setPreferredWidth(SCORE_WIDTH);
+		scrollPane.setPreferredSize(new Dimension(TABLE_WIDTH, 
+				TABLE_HEIGHT - labelPanel.getPreferredSize().height
+				 			 - getInsets().top - getInsets().bottom));
 		
 		this.add(scrollPane);
-		
-		/*ImageIcon icon = new ImageIcon("/Users/liutongtong/Pictures/logo.png");
-		ImageIcon icon2 = new ImageIcon("/Users/liutongtong/Pictures/Conan1.jpg");
-		addPlayer(icon, "杨妍喆", 20);
-		addPlayer(icon2, "包煜", 200);
-		removePlayer();*/
 	}
 	
 	public void addPlayer(ImageIcon image, String name, int score) {
@@ -196,7 +192,7 @@ class ImageRenderer extends JPanel implements TableCellRenderer {
 			image = ((ImageIcon)value).getImage();
 		}
 		if (isSelected) {
-			background = new Color(46,110,163);
+			background = PlayersPanel.BACKGROUND_COLOR;
         }
         else {
             background = Color.white;
@@ -223,7 +219,7 @@ class StringRenderer extends JLabel implements TableCellRenderer {
 		setText((String)value);
 		if (isSelected) {
             setForeground(Color.white);
-            setBackground(new Color(46,110,163));
+            setBackground(PlayersPanel.BACKGROUND_COLOR);
         }
         else {
             setForeground(Color.black);
