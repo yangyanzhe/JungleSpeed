@@ -7,7 +7,10 @@ public class GameControl {
 	int playersNum;
 	String[] playersName = new String[MAX_PLAYER_NUM - 1];
 	
+	int state;			// 0:未准备，1:准备，2:开始
+	boolean isColor;
 	int middleNum;
+	
 	int myCard;
 	int myFrontNum;
 	int myBackNum;
@@ -18,6 +21,8 @@ public class GameControl {
 	public GameControl() {
 		playersNum = 0;
 		
+		state = 0;
+		isColor = false;
 		middleNum = 0;
 		myCard = CARD_NUM;
 		myFrontNum = 0;
