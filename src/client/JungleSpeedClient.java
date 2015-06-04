@@ -73,18 +73,22 @@ class ClientThread extends Thread {
 				}
 				else if (splitStrings[0].equals("jointablesuccess")){
 					System.out.println("Join Table Success!");
+					pClient.app.gamehall_panel.setVisible(false);
+					pClient.app.gamePanel.setVisible(true);
 				}
 				else if (splitStrings[0].equals("jointablefail")) {
 					System.out.println("Join Table Fail!");
 				}
 				else if (splitStrings[0].equals("setreadysuccess")) {
 					System.out.println("Set ready success!");
+					pClient.app.gamePanel.game.state = 1;
 				}
 				else if (splitStrings[0].equals("setreadyfail")) {
 					System.out.println("Set ready fail!");
 				}
 				else if (splitStrings[0].equals("gamestart")) {
 					System.out.println("Game Start!");
+					pClient.app.gamePanel.game.state = 2;
 				}
 				else if (splitStrings[0].equals("turncard")) {
 					//翻牌，格式为： turncard~玩家编号~牌的编号

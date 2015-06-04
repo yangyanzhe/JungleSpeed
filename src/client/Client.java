@@ -62,6 +62,8 @@ public class Client extends JFrame {
 		
 		gamePanel = new GamePanel(this);
 		panelContainer.add(gamePanel, cHallPanel);
+		panelContainer.add(gamehall_panel, cHallPanel);
+		gamePanel.setVisible(false);
 		
 		GridBagConstraints cPlayerListPanel = new GridBagConstraints();
 		cPlayerListPanel.gridx = 3;

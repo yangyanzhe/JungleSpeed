@@ -304,7 +304,9 @@ public class GamePanel extends JPanel {
 			} else if (game.state == 0 && 
 					isClicked(xPos, yPos, READY_BUTTON_X, READY_BUTTON_Y, 72, 48)) {
 				// TODO: 点击准备按钮
-				System.out.println("yes");
+				//System.out.println("yes");
+				client.pClient.os.println("userready");
+				client.pClient.os.flush();
 			} else if (game.state == 1 && 
 					isClicked(xPos, yPos, CANCEL_BUTTON_X, CANCEL_BUTTON_Y, 72, 48)) {
 				// TODO: 点击取消按钮
