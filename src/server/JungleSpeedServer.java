@@ -724,6 +724,11 @@ class Messenger extends Thread {
 							}
 						}
 					}
+					else if (splitStrings[0].equals("leavetable")) {
+						System.out.println("用户" + _socket.ID + "离开" + _socket.No + "号桌子");
+						int tableNum = _socket.No;
+						desks[tableNum].remove(_socket);
+					}
 				}
 			} catch (Exception e) {
 			}
