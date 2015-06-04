@@ -14,6 +14,7 @@ import java.awt.event.MouseListener;
 
 import javax.swing.JPanel;
 
+//TODO gamecontrol中的iscolor是否为颜色模式
 @SuppressWarnings("serial")
 public class GamePanel extends JPanel {
 	static int GAME_WIDTH = 810;
@@ -275,7 +276,9 @@ public class GamePanel extends JPanel {
 		public void keyPressed(KeyEvent e) {
 			if (e.getKeyCode() == KeyEvent.VK_SPACE) {
 				// TODO: 按下空格键的事件处理
-				System.out.println("yes");
+				client.pClient.os.println("grab");
+				client.pClient.os.flush();
+				//System.out.println("yes");
 			}
 		}
 

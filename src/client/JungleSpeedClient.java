@@ -231,7 +231,6 @@ class ClientThread extends Thread {
 					}
 					pClient.app.gamePanel.repaint();
 				}
-				//TODO 是否添加登出功能？
 			} catch (Exception e) {
 			}
 		}

@@ -683,8 +683,7 @@ class Messenger extends Thread {
 					else if (splitStrings[0].equals("register")) {
 						//注册命令格式为register~用户名~密码
 						boolean flag = false;
-						//TODO 默认头像？
-						flag = userManager.add(splitStrings[1], splitStrings[2], "res/a.jpg");
+						flag = userManager.add(splitStrings[1], splitStrings[2], "res/a.gif");
 						if (flag) {
 							System.out.println("新用户" + splitStrings[1] + "注册成功！");
 							_socket.os.println("registersuccess~" + splitStrings[1] + "~" + splitStrings[2]);
