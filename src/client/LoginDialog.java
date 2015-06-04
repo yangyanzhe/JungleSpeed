@@ -36,7 +36,6 @@ public class LoginDialog extends JDialog {
 		super(client, "登陆", true);
 		this.client = client;
 		init();
-		this.setDefaultCloseOperation(HIDE_ON_CLOSE);
 	}
 	
 	public void init() {
