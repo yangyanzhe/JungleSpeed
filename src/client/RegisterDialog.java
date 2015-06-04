@@ -36,6 +36,8 @@ public class RegisterDialog extends JDialog {
 	JButton loginButton;
 	JButton registerButton;
 	
+	private int state = 0;
+	
 	public RegisterDialog(Client client) {
 		super(client, "注册", true);
 		this.client = client;
@@ -133,6 +135,10 @@ public class RegisterDialog extends JDialog {
 				infoLabel.setText("密码不能为空！");
 				infoLabel.setForeground(Color.RED);
 			}
+			else if (username.contains("~")) {
+				infoLabel.setText("用户名中不能包含~");
+				infoLabel.setForeground(Color.RED);
+			}
 			else if (password.equals(repassword)) {
 				client.pClient.os.println("register~" + username + "~" + password);
 				client.pClient.os.flush();
@@ -150,8 +156,21 @@ public class RegisterDialog extends JDialog {
 	
 	class LoginListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
+			state = 2;
 			setVisible(false);
-			client.loginDialog.setVisible(true);
 		}
+	}
+	
+	public void display() {
+		state = 0;
+		setVisible(true);
+	}
+	
+	public int getState() {
+		return state;
+	}
+	
+	public void setState(int v) {
+		this.state = v;
 	}
 }

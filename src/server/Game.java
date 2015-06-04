@@ -146,6 +146,7 @@ public class Game {
 				if(k == 0){
 					System.out.println("和局");
 					end = true;
+					updateGrade();
 					
 					for (int i = 0; i < gamerNumber; i++) {
 						_sockets[i].os.println("tie");
@@ -485,9 +486,18 @@ public class Game {
     			_sockets[i].os.println("gameover");
     			_sockets[i].os.flush();
     		}
+    		updateGrade();
     		return true;
     	}
     	else return false;
+    }
+    
+    public void updateGrade(){
+    	for(int i = 0; i < gamerNumber; i++){
+    		int score = (gamerNumber - winnerList[i]) * 10;
+    		_sockets[i].Grade += score;
+    	}
+    	
     }
     
 	public void start(){
@@ -528,12 +538,23 @@ public class Game {
 			_sockets[j].os.flush();
 		}
 		
-		Gamer leaveGamer = gamers[id];
-		leaveGamer.init();
-		for(int j = id; j < gamerNumber; j++){
-			gamers[j] = gamers[j+1];
+		// 调整gamers和winnerList
+		if(id == 7){
+			winnerList[id] = 0;
+			gamers[id].init();
 		}
-		gamers[gamerNumber-1] = leaveGamer;	
+		else{
+			Gamer leaveGamer = gamers[id];
+			leaveGamer.init();
+			int j;
+			for(j = id; j < gamerNumber; j++){
+				gamers[j] = gamers[j+1];
+				winnerList[j] = winnerList[j+1];
+			}
+			winnerList[j] = 0;
+			gamers[gamerNumber-1] = leaveGamer;	
+		}
+		
 		gamerNumber--;
 		System.out.println("现在有用户"+gamerNumber+"个");
 		timerResume();

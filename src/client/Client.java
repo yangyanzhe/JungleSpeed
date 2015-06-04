@@ -56,7 +56,7 @@ public class Client extends JFrame {
 //		hallPanel = new HallPanel(this);
 		
 		gamehall_panel = new GameHall(this);
-		gamehall_panel.setSize(800,700);
+		gamehall_panel.setSize(800,600);
 //		gamehall_panel.setLocation(0,0);
 //		panelContainer.add(gamehall_panel, cHallPanel);
 		
@@ -106,8 +106,23 @@ public class Client extends JFrame {
 	
 	public void run() {
 		setVisible(true);
-		loginDialog.setVisible(true);
-		System.out.println(loginDialog.getState());
+		while (true) {
+			loginDialog.display();;
+			if (loginDialog.getState() == 0) {
+				System.exit(0);
+			} else if (loginDialog.getState() == 1) {
+				break;
+			}
+			registerDialog.display();
+			if (loginDialog.getState() == 0) {
+				System.exit(0);
+			} else if (loginDialog.getState() == 1) {
+				break;
+			}
+		}
+		
+		//System.out.println(loginDialog.getState());
+		
 	}
 	
 	/*public static void main(String[] args) {

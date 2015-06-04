@@ -33,6 +33,8 @@ public class JungleSpeedClient {
 		
 		ClientThread clientThread = new ClientThread(this);
 		clientThread.start();
+		//ClientOperation clientOperation = new ClientOperation(this);
+		//clientOperation.start();
 		this.app = new Client(this);
 		this.app.run();
 	}
@@ -60,6 +62,7 @@ class ClientThread extends Thread {
 					//返回用户名，积分，头像给这里，构造一个player对象(Client类中的)
 					//loginreveived~用户名~积分~头像路径
 					System.out.println("登录成功！");
+					pClient.app.loginDialog.setState(1);
 					pClient.app.loginDialog.infoLabel.setText("");
 					ImageIcon icon = new ImageIcon(splitStrings[3]);
 					int score = Integer.parseInt(splitStrings[2]);
@@ -128,6 +131,7 @@ class ClientThread extends Thread {
 				else if (splitStrings[0].equals("registersuccess")) {
 					//registersuccess~用户名~密码
 					System.out.println("注册成功");
+					pClient.app.registerDialog.setState(1);
 					/*pClient.app.gamehall_panel.setVisible(false);
 					pClient.app.loginDialog.setVisible(false);
 					pClient.app.registerDialog.setVisible(true);*/
@@ -176,6 +180,42 @@ class ClientThread extends Thread {
 						msg = msg.substring(splitStrings[i].length() + 1);
 					}
 					pClient.app.chatPanel.addPlayerMessage(icon, splitStrings[1], msg);
+				}
+				else if (splitStrings[0].equals("setplayersNum")) {
+					int num = Integer.parseInt(splitStrings[1]);
+					pClient.app.gamePanel.game.playersNum = num;
+				}
+				else if (splitStrings[0].equals("setplayersName")) {
+					for (int i = 0; i < splitStrings.length - 1; i++) {
+						pClient.app.gamePanel.game.playersName[i] = splitStrings[i+1];
+					}
+				}
+				else if (splitStrings[0].equals("setmiddleNum")) {
+					pClient.app.gamePanel.game.middleNum = Integer.parseInt(splitStrings[1]);
+				}
+				else if (splitStrings[0].equals("setmyCard")) {
+					pClient.app.gamePanel.game.myCard = Integer.parseInt(splitStrings[1]);
+				}
+				else if (splitStrings[0].equals("setmyFrontNum")) {
+					pClient.app.gamePanel.game.myFrontNum = Integer.parseInt(splitStrings[1]);
+				}
+				else if (splitStrings[0].equals("setmyBackNum")) {
+					pClient.app.gamePanel.game.myBackNum = Integer.parseInt(splitStrings[1]);
+				}
+				else if (splitStrings[0].equals("setotherCard")) {
+					for (int i = 0; i < splitStrings.length - 1; i++) {
+						pClient.app.gamePanel.game.otherCard[i] = Integer.parseInt(splitStrings[i+1]);
+					}
+				}
+				else if (splitStrings[0].equals("setotherFrontNum")) {
+					for (int i = 0; i < splitStrings.length - 1; i++) {
+						pClient.app.gamePanel.game.otherFrontNum[i] = Integer.parseInt(splitStrings[i+1]);
+					}
+				}
+				else if (splitStrings[0].equals("setotherBackNum")) {
+					for (int i = 0; i < splitStrings.length - 1; i++) {
+						pClient.app.gamePanel.game.otherBackNum[i] = Integer.parseInt(splitStrings[i+1]);
+					}
 				}
 				//TODO 是否添加登出功能？
 			} catch (Exception e) {

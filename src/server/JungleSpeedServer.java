@@ -201,12 +201,17 @@ class Desk extends Game {
 				int j;
 				for (j = i; j < 7; j++) {
 					_sockets[j] = _sockets[j + 1];
+					if(_sockets[j] == null){
+						break;
+					}
 				}
-				_sockets[j] = null;
+				_sockets[j] = _socket;
 			}
 		}
-		
-		exceptionLeave(id);
+		if (isReady) {
+			_socket.Grade -= 10;
+			exceptionLeave(id);
+		}
 	}
 }
 
@@ -611,8 +616,8 @@ class Messenger extends Thread {
 						}
 					}
 					else if (splitStrings[0].equals("userready")) {
-						//用户点击了准备按钮，进入准备状态，格式为 userready~桌子编号
-						int tableNum = Integer.parseInt(splitStrings[1]);
+						//用户点击了准备按钮，进入准备状态，格式为 userready
+						int tableNum = _socket.No;
 						System.out.println("Set ready");
 						boolean flag = false;
 						for (int i = 0; i < 8; i++) {
@@ -652,12 +657,13 @@ class Messenger extends Thread {
 							desks[tableNum].gamerNumber = len;
 							desks[tableNum].tableID = tableNum;
 							desks[tableNum].start();
+							transferGameControl(tableNum);
 						}
 					}
 					else if (splitStrings[0].equals("grab")) {
-						//抢夺图腾，格式为：grab~桌子编号
+						//抢夺图腾，格式为：grab
 						System.out.println("grabing...");
-						int tableNum = Integer.parseInt(splitStrings[1]);
+						int tableNum = _socket.No;
 						int len = desks[tableNum].gamerNumber;
 						for (int i = 0; i < len; i++) {
 							if (desks[tableNum]._sockets[i] == _socket) {
@@ -666,6 +672,7 @@ class Messenger extends Thread {
 								break;
 							}
 						}
+						transferGameControl(tableNum);
 						//把所有结果发给所有客户端
 						//发给客户端的结果格式为：grabresult~结果
 						//结果类型有getall(包括图腾下的) rejecttototem rejecttoother
@@ -725,6 +732,56 @@ class Messenger extends Thread {
 	
 	public void end() {
 		userManager.outputToFile();
+	}
+	
+	private void transferGameControl(int tableNum) {
+		for (int i = 0; i < desks[tableNum].gamerNumber; i++) {
+			desks[tableNum]._sockets[i].os.println("setplayersNum~" + (desks[tableNum].gamerNumber - 1));
+			desks[tableNum]._sockets[i].os.flush();
+			
+			String playersNameSet = "";
+			String otherCardSet = "";
+			String otherFrontNumSet = "";
+			String otherBackNumSet = "";
+			for (int j = 0; j < desks[tableNum].gamerNumber; j++) {
+				if (j != i) {
+					playersNameSet = playersNameSet + desks[tableNum]._sockets[j].ID + "~";
+					otherCardSet = otherCardSet + desks[tableNum].gamers[j].cardShown + "~";
+					otherFrontNumSet = otherFrontNumSet + desks[tableNum].gamers[j].upCount + "~";
+					otherBackNumSet = otherBackNumSet + 
+							(desks[tableNum].gamers[j].downTail - desks[tableNum].gamers[j].downHead) + "~";
+				}
+			}
+			playersNameSet = playersNameSet.substring(0, playersNameSet.length()-1);
+			otherCardSet = otherCardSet.substring(0, otherCardSet.length()-1);
+			otherFrontNumSet = otherFrontNumSet.substring(0, otherFrontNumSet.length()-1);
+			otherBackNumSet = otherBackNumSet.substring(0, otherBackNumSet.length()-1);
+			
+			desks[tableNum]._sockets[i].os.println("setplayersName~" + playersNameSet);
+			desks[tableNum]._sockets[i].os.flush();
+			
+			desks[tableNum]._sockets[i].os.println("setmiddleNum~" + desks[tableNum].totemCardsNumber);
+			desks[tableNum]._sockets[i].os.flush();
+			
+			desks[tableNum]._sockets[i].os.println("setmyCard~" + desks[tableNum].gamers[i].cardShown);
+			desks[tableNum]._sockets[i].os.flush();
+			
+			desks[tableNum]._sockets[i].os.println("setmyFrontNum~" + desks[tableNum].gamers[i].upCount);
+			desks[tableNum]._sockets[i].os.flush();
+			
+			desks[tableNum]._sockets[i].os.println("setmyBackNum~" + 
+					(desks[tableNum].gamers[i].downTail - desks[tableNum].gamers[i].downHead));
+			desks[tableNum]._sockets[i].os.flush();
+			
+			desks[tableNum]._sockets[i].os.println("setotherCard~" + otherCardSet);
+			desks[tableNum]._sockets[i].os.flush();
+			
+			desks[tableNum]._sockets[i].os.println("setotherFrontNum~" + otherFrontNumSet);
+			desks[tableNum]._sockets[i].os.flush();
+			
+			desks[tableNum]._sockets[i].os.println("setotherBackNum~" + otherBackNumSet);
+			desks[tableNum]._sockets[i].os.flush();
+		}
 	}
 }
 

@@ -122,7 +122,6 @@ public class LoginDialog extends JDialog {
 				client.pClient.os.println("login~" + username + "~" + password);
 				client.pClient.os.flush();
 				passwordField.setText("");
-				state = 1;
 				//new Player的操作放在了JungleSpeedClient中，因为只有在登录成功消息接收后才能构造该类
 				/*ImageIcon icon = new ImageIcon("/Users/liutongtong/Pictures/logo.png");
 				client.player = new Player(icon, "tt", 100);*/
@@ -132,14 +131,23 @@ public class LoginDialog extends JDialog {
 	
 	class RegisterListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
+			state = 2;
 			usernameField.setText("");
 			passwordField.setText("");
 			setVisible(false);
-			client.registerDialog.setVisible(true);
 		}
 	}
 
+	public void display() {
+		state = 0;
+		setVisible(true);
+	}
+	
 	public int getState() {
 		return state;
+	}
+	
+	public void setState(int v) {
+		this.state = v;
 	}
 }
