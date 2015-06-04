@@ -130,6 +130,11 @@ public class GamePanel extends JPanel {
 		height = cards[0].getHeight(null);
 		x = GAME_WIDTH/2 - INTEVAL/2 - width;
 		y = GAME_HEIGHT - INTEVAL - height;
+		
+		int card = game.myCard;
+		if (card < 0) {
+			card = cardNum;
+		}
 		g.drawImage(cards[game.myCard], x, y, width, height, null);
 		Color oldColor = g.getColor();
 		g.setColor(TEXT_COLOR);
@@ -207,7 +212,11 @@ public class GamePanel extends JPanel {
 		default:
 			break;
 		}
-		g.drawImage(cards[game.otherCard[player]], x, y, width, height, null);
+		int card = game.otherCard[player];
+		if (card < 0) {
+			card = cardNum;
+		}
+		g.drawImage(cards[card], x, y, width, height, null);
 		Color oldColor = g.getColor();
 		g.setColor(TEXT_COLOR);
 		Font oldFont = g.getFont();
