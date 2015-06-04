@@ -21,16 +21,21 @@ public class GamePanel extends JPanel {
 	static int GAME_HEIGHT = 610;
 	final static int INTEVAL = 40;
 	final static int TEXT_INTEVAL = 2;
+	final static int CAPTION_INTEVAL = 14;
 	final static int BUTTON_INTEVAL = 12;
 	final static int BUTTON_BORDER = 3;
+	
 	final static Color BACKGROUND_COLOR = new Color(46,110,163);
 	final static Color TEXT_COLOR = new Color(255, 255, 255);
 	final static Color BUTTON_BACKGROUND_COLOR = new Color(255, 255, 255);
 	final static Color BUTTON_BORDER_COLOR = new Color(0, 0, 0);
 	final static Color BUTTON_TEXT_COLOR = new Color(0, 0, 0);
+	final static Color CAPTION_COLOR = new Color(255, 255, 255);
+	
 	final static Font NAME_FONT = new Font("SimSun", Font.BOLD, 14);
 	final static Font NUM_FONT = new Font("SimSun", Font.PLAIN, 12);
 	final static Font BUTTON_FONT = new Font("SimSun", Font.PLAIN, 30);
+	final static Font CAPTION_FONT = new Font("SimSun", Font.PLAIN, 20);
 	
 	Client client;
 	GameControl game;
@@ -80,6 +85,7 @@ public class GamePanel extends JPanel {
 		drawMiddle(g);
 		drawInfo(g);
 		drawButtons(g);
+		drawCaption(g);
 	}
 	
 	public void drawBackground(Graphics g) {
@@ -125,6 +131,11 @@ public class GamePanel extends JPanel {
 		height = cards[0].getHeight(null);
 		x = GAME_WIDTH/2 - INTEVAL/2 - width;
 		y = GAME_HEIGHT - INTEVAL - height;
+		
+		int card = game.myCard;
+		if (card < 0) {
+			card = cardNum;
+		}
 		g.drawImage(cards[game.myCard], x, y, width, height, null);
 		Color oldColor = g.getColor();
 		g.setColor(TEXT_COLOR);
@@ -202,7 +213,11 @@ public class GamePanel extends JPanel {
 		default:
 			break;
 		}
-		g.drawImage(cards[game.otherCard[player]], x, y, width, height, null);
+		int card = game.otherCard[player];
+		if (card < 0) {
+			card = cardNum;
+		}
+		g.drawImage(cards[card], x, y, width, height, null);
 		Color oldColor = g.getColor();
 		g.setColor(TEXT_COLOR);
 		Font oldFont = g.getFont();
@@ -270,6 +285,19 @@ public class GamePanel extends JPanel {
 		g.drawString(label, x + BUTTON_BORDER*2, 
 				y + BUTTON_BORDER*2 + g.getFontMetrics().getFont().getSize());
 		g.setColor(oldColor);
+	}
+	
+	public void drawCaption(Graphics g) {
+		Color oldColor = g.getColor();
+		g.setColor(CAPTION_COLOR);
+		Font oldFont = g.getFont();
+		g.setFont(CAPTION_FONT);
+		if (game.caption.length() > 0) {
+			drawCenterString(g, game.caption, GAME_WIDTH/2, 
+					GAME_HEIGHT/2 - logo1.getHeight(null)/2 - CAPTION_INTEVAL);
+		}
+		g.setColor(oldColor);
+		g.setFont(oldFont);
 	}
 	
 	class keyListenser implements KeyListener {
