@@ -9,8 +9,9 @@ public class GameControl {
 	
 	int state;			// 0:未准备，1:准备，2:开始
 	boolean isColor;
-	int middleNum;
+	String caption;
 	
+	int middleNum;
 	int myCard;
 	int myFrontNum;
 	int myBackNum;
@@ -23,6 +24,8 @@ public class GameControl {
 		
 		state = 0;
 		isColor = false;
+		caption = new String("欢迎来到图腾快手游戏!");
+		
 		middleNum = 0;
 		myCard = CARD_NUM;
 		myFrontNum = 0;
