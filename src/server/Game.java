@@ -127,7 +127,7 @@ public class Game {
 	public void turnCard(){
 		currentGamer = nextGamer;
 		if(currentGamer >= gamerNumber){
-			currentGamer = (currentGamer + 1) % gamerNumber;
+			currentGamer = 0;
 		}
 		
 		currentMode = nextMode;
@@ -453,6 +453,15 @@ public class Game {
         }
     }
 	
+    public void timerStop(){
+    	if(startFromTimer1){
+    		timer2.cancel();
+    	}
+    	else if(startFromTimer2){
+    		timer1.cancel();
+    	}
+    }
+    
     public void timerResume(){
     	if(startFromTimer1){
     		count = 2;
@@ -498,21 +507,23 @@ public class Game {
 	}	
 	
 	public void exceptionLeave(int id){
-		System.out.println("用户"+id+"掉线了");
+		System.out.println("用户"+id+"掉线了(send by class Game)");
+		timerStop();
 		
 		// put cards under totem
-		totemCardsNumber = gamers[id].upCount;
-		int i = 0;
-		for(i = 0; i < totemCardsNumber; i++){
-			totemCards[i] = gamers[id].cardUp[i];
-		}
-		gamers[id].dropUpCards();
-		for(int j = gamers[id].downHead; j <= gamers[id].downTail; j++){
-			totemCards[i] = gamers[id].cardDown[j];
+		int i = totemCardsNumber;
+		for(int j = 0 ; j <  gamers[id].upCount; j++){
+			totemCards[i] = gamers[id].cardUp[j];
 			i++;
 		}
+		gamers[id].dropUpCards();
+		for(int j = gamers[id].downHead; j <= gamers[id].downTail; ){
+			totemCards[i] = gamers[id].cardDown[j];
+			i++;
+			j = (j + 1) % 80;
+		}
 		
-		for (int j = 0; j < gamerNumber; j++) {
+		for (int j = 0; j < (gamerNumber-1); j++) {
 			_sockets[j].os.println("grabresult~rejecttototem~" + id);
 			_sockets[j].os.flush();
 		}
@@ -524,6 +535,8 @@ public class Game {
 		}
 		gamers[gamerNumber-1] = leaveGamer;	
 		gamerNumber--;
+		System.out.println("现在有用户"+gamerNumber+"个");
+		timerResume();
 	}
 }
 

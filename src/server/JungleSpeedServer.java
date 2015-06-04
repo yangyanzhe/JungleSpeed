@@ -18,7 +18,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.Vector;
 
-
+//TODO 同一个位置不能加多个人
 public class JungleSpeedServer {
 	public static void main(String[] args) {
 		serve();
@@ -92,6 +92,7 @@ class ClientListener extends Thread	{
 				System.out.println("一个用户断线了"+_socket.socket);
 				if (_socket.ID != null) {
 					//若该用户还没有登录，就不把他的消息给其他所有客户端了
+					System.out.println("掉线啊！！！！！！！");
 					Information info = new Information(_socket, "offline");
 					messenger.mq.put(info);
 				}
@@ -193,9 +194,11 @@ class Desk extends Game {
 	public void remove(SOCKET _socket) {
 		//TODO 要处理有人在游戏过程当中强退游戏后把他的牌都放在图腾下面，游戏继续。进入桌子里面退出还需要测试
 		// 游戏中有人强退游戏 或是 游戏还没开始时有人退出桌子
+
 		int id = 0;
-		for (int i = 0; i < 8; i++) {
-			if (_sockets[i].equals(_socket)) {
+		int i;
+		for (i = 0; i < 8; i++) {
+			if (_sockets[i] != null && _sockets[i].equals(_socket)) {
 				id = i;
 				int j;
 				for (j = i; j < 7; j++) {
@@ -694,6 +697,7 @@ class Messenger extends Thread {
 							desks[_socket.No].remove(_socket);
 						}
 						User t = userManager.findByUsername(_socket.ID);
+						System.out.println(t.getUsername());
 						t.isLogIn = false;
 					}
 					else if (splitStrings[0].equals("chattoserver")) {
