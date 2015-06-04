@@ -135,6 +135,10 @@ public class RegisterDialog extends JDialog {
 				infoLabel.setText("密码不能为空！");
 				infoLabel.setForeground(Color.RED);
 			}
+			else if (username.contains("~")) {
+				infoLabel.setText("用户名中不能包含~");
+				infoLabel.setForeground(Color.RED);
+			}
 			else if (password.equals(repassword)) {
 				client.pClient.os.println("register~" + username + "~" + password);
 				client.pClient.os.flush();
