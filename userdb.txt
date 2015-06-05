@@ -1,6 +1,11 @@
 haha 123 40 res/a.gif
 hehe 123 30 res/a.gif
+<<<<<<< HEAD
 hiahia 123 20 res/a.gif
 null 123 0 res/a.gif
 test1 123 0 res/a.gif
 test2 123 0 res/a.gif
+=======
+hiahia 123 30 res/a.gif
+
+>>>>>>> 0a224e5d7b59eab09599920be4fbe58a97b2798b
