@@ -210,7 +210,7 @@ public class Game {
 						otherCardSet = otherCardSet + gamers[j].cardShown + "~";
 						otherFrontNumSet = otherFrontNumSet + gamers[j].upCount + "~";
 						otherBackNumSet = otherBackNumSet + 
-								(gamers[j].downTail - gamers[j].downHead) + "~";
+								((gamers[j].downTail - gamers[j].downHead + 80) % 80) + "~";
 					}
 				}
 				playersNameSet = playersNameSet.substring(0, playersNameSet.length()-1);
@@ -231,7 +231,7 @@ public class Game {
 				_sockets[i].os.flush();
 				
 				_sockets[i].os.println("setmyBackNum~" + 
-						(gamers[i].downTail - gamers[i].downHead));
+						((gamers[i].downTail - gamers[i].downHead + 80) % 80));
 				_sockets[i].os.flush();
 				
 				_sockets[i].os.println("setotherCard~" + otherCardSet);
