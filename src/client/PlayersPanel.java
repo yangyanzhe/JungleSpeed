@@ -99,7 +99,7 @@ public class PlayersPanel extends JPanel {
 	public void removePlayer(String name) {
 		int rowsNum = playerModel.getRowCount();
 		for (int i = 0; i < rowsNum; i++) {
-			if (playerModel.getValueAt(i, 1) == name) {
+			if (playerModel.getValueAt(i, 1).equals(name)) {
 				playerModel.removeRow(i);
 				break;
 			}

@@ -9,9 +9,12 @@ import java.util.TimerTask;
 * Time:   2015/05/30
 *************************************************************/
 
+//TODO 积分结算
 public class Game {
 	public SOCKET[] _sockets;
 	public int tableID;
+	public boolean isReady;
+	UserManager um;
 	
 	int gamerNumber;						// total number of gamers
 	int currentCard;						// new shown card
@@ -42,7 +45,7 @@ public class Game {
 	
 	int punishedGuy;						// player who will be punished after a rob action
 	
-	public Game(){
+	public Game(UserManager um){
 		gamers = new Gamer[8];	
 		for(int i = 0; i<8; i++){
 			gamers[i] = new Gamer();
@@ -54,6 +57,8 @@ public class Game {
 			_sockets[i] = null;
 		}
 		tableID = -1;
+		isReady = false;
+		this.um = um;
 		init();
 	}
 	
@@ -534,7 +539,23 @@ public class Game {
     			_sockets[i].os.println("gameover");
     			_sockets[i].os.flush();
     		}
+    		
     		updateGrade();
+    		for (int i = 0; i < 8; i++) {
+    			if (_sockets[i] != null){
+    				um.findByUsername(_sockets[i].ID).setScore(_sockets[i].Grade);
+    			}
+    			else {
+					break;
+				}
+    		}
+    		um.outputToFile();
+    		
+    		//剔除逃跑的人
+    		for (int i = gamerNumber; i < 8; i++) {
+    			_sockets[i] = null;
+    		}
+    		isReady = false;
     		return true;
     	}
     	else return false;

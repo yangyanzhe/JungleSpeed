@@ -125,6 +125,8 @@ class ClientThread extends Thread {
 					System.out.println("Game Over!");
 					pClient.app.gamePanel.game.caption = "Game Over!";
 					pClient.app.gamePanel.repaint();
+					pClient.os.println("cancelready");
+					pClient.os.flush();
 				}
 				else if (splitStrings[0].equals("tie")) {
 					System.out.println("Tie!!");
@@ -178,7 +180,9 @@ class ClientThread extends Thread {
 				else if (splitStrings[0].equals("clientoffline")) {
 					//用户下线信息，发给客户端的格式为：clientoffline~username
 					System.out.println("用户" + splitStrings[1] + "下线了！");
-					//TODO 根据新的接口来删用户
+					//删用户
+					pClient.app.playersPanel.removePlayer(splitStrings[1]);
+					pClient.app.playersPanel.repaint();
 				}
 				else if (splitStrings[0].equals("loginagain")) {
 					System.out.println("重复登录，登录失败！");
@@ -254,8 +258,14 @@ class ClientThread extends Thread {
 				}
 				else if (splitStrings[0].equals("leavetablesuccess")) {
 					//TODO 离开桌子的gamehall中还有人。bug...
+					//leavetablesuccess~桌子号~座位号
 					System.out.println("leave table success");
+					int tableNum = Integer.parseInt(splitStrings[1]);
+					int seatNum = Integer.parseInt(splitStrings[2]);
+					int id = tableNum * 8 + seatNum;
+					
 					pClient.app.gamePanel.setVisible(false);
+					//pClient.app.gamehall_panel.drawingPanel.chairs[id] = -1;
 					pClient.app.gamehall_panel.setVisible(true);
 					pClient.app.gamehall_panel.repaint();
 				}
