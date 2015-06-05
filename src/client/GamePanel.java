@@ -333,6 +333,7 @@ public class GamePanel extends JPanel {
 				// 点击离开按钮
 				//System.out.println("yes");
 				client.pClient.os.println("leavetable");
+				game.init();
 				client.pClient.os.flush();
 			} else if (game.state == 0 && 
 					isClicked(xPos, yPos, READY_BUTTON_X, READY_BUTTON_Y, 72, 48)) {

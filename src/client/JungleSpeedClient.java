@@ -93,6 +93,7 @@ class ClientThread extends Thread {
 				else if (splitStrings[0].equals("jointablesuccess")){
 					System.out.println("Join Table Success!");
 					pClient.app.gamehall_panel.setVisible(false);
+					pClient.app.gamePanel.repaint();
 					pClient.app.gamePanel.setVisible(true);
 				}
 				else if (splitStrings[0].equals("jointablefail")) {
@@ -190,7 +191,8 @@ class ClientThread extends Thread {
 					int table = Integer.parseInt(splitStrings[2]);
 					int id = Integer.parseInt(splitStrings[3]);
 					id += table * 8;
-					pClient.app.gamehall_panel.drawingPanel.addchairs(id, 1);
+					int playerType = ((int)(Math.random() * 4)) % 2;
+					pClient.app.gamehall_panel.drawingPanel.addchairs(id, playerType);
 				}
 				else if (splitStrings[0].equals("tablegamestart")) {
 					//tablegamestart~桌子号
@@ -276,7 +278,6 @@ class ClientThread extends Thread {
 					pClient.app.gamePanel.repaint();
 				}
 				else if (splitStrings[0].equals("leavetablesuccess")) {
-					//TODO 离开桌子的gamehall中还有人。bug...
 					//leavetablesuccess~桌子号~座位号
 					System.out.println("leave table success");
 					int tableNum = Integer.parseInt(splitStrings[1]);
@@ -287,6 +288,13 @@ class ClientThread extends Thread {
 					pClient.app.gamehall_panel.drawingPanel.chairs[id] = -1;
 					pClient.app.gamehall_panel.repaint();
 					pClient.app.gamehall_panel.setVisible(true);
+				}
+				else if (splitStrings[0].equals("leavetablebroadcast")) {
+					//leavetablebroadcast~tableNum~seatNum
+					int tableNum = Integer.parseInt(splitStrings[1]);
+					int seatNum = Integer.parseInt(splitStrings[2]);
+					int id = tableNum * 8 + seatNum;
+					pClient.app.gamehall_panel.drawingPanel.removechairs(id);
 				}
 			} catch (Exception e) {
 			}

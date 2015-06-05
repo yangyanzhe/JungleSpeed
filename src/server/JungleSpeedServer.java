@@ -210,6 +210,9 @@ class Desk extends Game {
 			_socket.Grade -= 10;
 			exceptionLeave(id);
 		}
+		else{
+			gamerNumber--;
+		}
 	}
 }
 
@@ -220,10 +223,10 @@ class User {
 	public boolean isLogIn = false;
 	private String avatar = "";
 	
-	public User(String username, String password, String avatar) {
+	public User(String username, String password, int score, String avatar) {
 		this.username = username;
 		this.password = password;
-		this.score = 0;
+		this.score = score;
 		this.isLogIn = false;
 		this.avatar = avatar;
 	}
@@ -257,8 +260,7 @@ class User {
 	}
 	
 	public User copy() {
-		User r = new User(username, password, avatar);
-		r.setScore(score);
+		User r = new User(username, password, score, avatar);
 		r.isLogIn = this.isLogIn;
 		return r;
 	}
@@ -515,10 +517,27 @@ class Messenger extends Thread {
 					else if (splitStrings[0].equals("leavetable")) {
 						System.out.println("用户" + _socket.ID + "离开" + _socket.No + "号桌子");
 						int tableNum = _socket.No;
+						int seatNum = _socket.seatInTable;
 						desks[tableNum].remove(_socket);
 						System.out.println(desks[tableNum].gamerNumber);
-						_socket.os.println("leavetablesuccess~" + _socket.No + "~" + _socket.seatInTable);
+						_socket.os.println("leavetablesuccess~" + tableNum + "~" + seatNum);
 						_socket.os.flush();
+						
+						System.out.println(desks[tableNum].gamerNumber);
+						if (desks[tableNum].gamerNumber == 0) {
+							System.out.println("进来没？" + "table" + tableNum);
+							desks[tableNum] = null;
+						}
+						
+						int n = SOCKETList.size();
+						for (int i = 0; i < n; i++) {
+							SOCKET temp = (SOCKET)SOCKETList.get(i);
+							if (!_socket.equals(temp)) {
+								temp.os.println("leavetablebroadcast~" + tableNum + "~" + seatNum);
+								temp.os.flush();
+							}
+						}
+
 						_socket.No = -1;
 						_socket.seatInTable = -1;
 					}

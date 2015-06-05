@@ -56,7 +56,7 @@ public class UserManager{
 			return false;
 		}
 			
-		User user = new User(username, password, avatar);
+		User user = new User(username, password, 0, avatar);
 		boolean ifSucceed = add(user);
 		if (! ifSucceed){
 			System.out.println("Add new user failed. Unknown reason.");
@@ -191,7 +191,7 @@ public class UserManager{
 	            //debug 
 	            //System.out.println(strList[0] + "~" + strList[1] + "~" + strList[2]);
 	            
-	            User user = new User(strList[0], strList[1], strList[3]);
+	            User user = new User(strList[0], strList[1], Integer.parseInt(strList[2]), strList[3]);
 	            userSet.add(user);
 	        }
 			
