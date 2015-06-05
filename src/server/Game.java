@@ -143,6 +143,9 @@ public class Game {
 		
 		currentMode = nextMode;
 		nextMode = 0;
+		if(currentMode == 3){
+			System.out.println("开始用颜色抢啦");
+		}
 		
 		if(currentMode != 1){
 			while(winnerList[currentGamer] > 0){
@@ -183,6 +186,7 @@ public class Game {
 			}
 			else if(currentCard < 8){
 				nextMode = 3;					// 下轮开始按颜色取同
+				System.out.println("下局按颜色抢");
 			}
 			else {
 				currentMode = 0;				// 正常
@@ -282,6 +286,7 @@ public class Game {
 				}
 				else if((!outerArrow) && currentCard < 8){
 					nextMode = 3;
+					System.out.println("下局按颜色抢");
 					functionCard = true;
 				}
 			} // end for
@@ -311,6 +316,8 @@ public class Game {
 	}
 	
 	public boolean judgeRob(int gamerId){
+		System.out.println("gamerId="+gamerId+";currentMode="+currentMode+"currentGamer="+currentGamer);
+		
 		/// 功能牌 ///
 		if(currentMode == 2){
 			return true;		
@@ -332,7 +339,10 @@ public class Game {
 		}
 		
 		/// 正常规则   ///
+		System.out.println("currentGamer=" + currentGamer+" gamerId = " + gamerId);
 		if(currentGamer == gamerId){
+			System.out.println("find the punished guy");
+			
 			// find the punished guy
 			for(int i = 0; i<gamerNumber; i++){
 				if(i == gamerId){
@@ -360,17 +370,19 @@ public class Game {
 		}
 		
 		else{
+			System.out.println("find the punished guy2");
+
 			if(gamers[gamerId].upCount == 0){
 				return false;
 			}
 			
 			if(currentMode == 0 &&  ((gamers[gamerId].cardShown / 4) == (currentCard / 4))){
-				punishedGuy = gamerId;
+				punishedGuy = currentGamer;
 				return true;
 			}
 			
 			else if(currentMode == 3 && ((gamers[gamerId].cardShown % 4) == (currentCard % 4))){
-				punishedGuy = gamerId;
+				punishedGuy = currentGamer;
 				return true;
 			}
 		}
