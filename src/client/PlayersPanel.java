@@ -96,8 +96,14 @@ public class PlayersPanel extends JPanel {
 		playerModel.addRow(new Object[] { image, name, (new Integer(score)).toString() });
 	}
 	
-	public void removePlayer() {
-		playerModel.removeRow(0);
+	public void removePlayer(String name) {
+		int rowsNum = playerModel.getRowCount();
+		for (int i = 0; i < rowsNum; i++) {
+			if (playerModel.getValueAt(i, 1) == name) {
+				playerModel.removeRow(i);
+				break;
+			}
+		}
 	}
 }
 
