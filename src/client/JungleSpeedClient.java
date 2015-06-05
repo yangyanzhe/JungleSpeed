@@ -2,6 +2,8 @@ package client;
 
 import java.awt.Color;
 import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -12,6 +14,7 @@ import javax.swing.ImageIcon;
 public class JungleSpeedClient {
 	int port;
 	String ip;
+	String iniFile = "ini/connect.ini";
 	Socket socket;
 	PrintWriter os;
 	BufferedReader is;
@@ -19,8 +22,23 @@ public class JungleSpeedClient {
 	Client app = null;
 	
 	public JungleSpeedClient() {
-		ip = "127.0.0.1";
-		port = 4700;
+		try
+		{
+			BufferedReader buf = new BufferedReader(new FileReader(iniFile));
+		
+			ip = buf.readLine();
+			if (ip == null) {
+				ip = "127.0.0.1";
+			}
+			String tport = buf.readLine();
+			if (tport == null) {
+				port = 4700;
+			}
+			else {
+				port = Integer.parseInt(tport);
+			}
+			buf.close();
+		}catch(IOException mye){System.out.println(mye);}
 		
 		try {
 			socket = new Socket(ip, port);
@@ -66,7 +84,8 @@ class ClientThread extends Thread {
 					pClient.app.loginDialog.infoLabel.setText("");
 					ImageIcon icon = new ImageIcon(splitStrings[3]);
 					int score = Integer.parseInt(splitStrings[2]);
-					pClient.app.player = new Player(icon, splitStrings[1], score);
+					pClient.app.player = new Player(pClient.app, icon, splitStrings[1], score);
+					pClient.app.infoPanel.updateInfo();
 					pClient.app.loginDialog.setVisible(false);
 					pClient.app.registerDialog.setVisible(false);
 					pClient.app.gamehall_panel.setVisible(true);
