@@ -1,6 +1,4 @@
-haha 123 180 res/a.gif
-hehe 123 -10 res/a.gif
-hiahia 123 180 res/a.gif
-null 123 0 res/a.gif
-test1 123 0 res/a.gif
-test2 123 0 res/a.gif
+haha 123 20 res/a.gif
+hehe 123 30 res/a.gif
+hiahia 123 30 res/a.gif
+
