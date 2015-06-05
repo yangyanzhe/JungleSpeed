@@ -273,7 +273,7 @@ class ClientThread extends Thread {
 					int tableNum = Integer.parseInt(splitStrings[1]);
 					int seatNum = Integer.parseInt(splitStrings[2]);
 					int id = tableNum * 8 + seatNum;
-					pClient.app.gamehall_panel.drawingPanel.chairs[id] = -1;
+					pClient.app.gamehall_panel.drawingPanel.removechairs(id);
 				}
 			} catch (Exception e) {
 			}
