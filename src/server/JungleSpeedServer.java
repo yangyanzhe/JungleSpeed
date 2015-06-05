@@ -210,6 +210,9 @@ class Desk extends Game {
 			_socket.Grade -= 10;
 			exceptionLeave(id);
 		}
+		else{
+			gamerNumber--;
+		}
 	}
 }
 
@@ -519,6 +522,12 @@ class Messenger extends Thread {
 						System.out.println(desks[tableNum].gamerNumber);
 						_socket.os.println("leavetablesuccess~" + tableNum + "~" + seatNum);
 						_socket.os.flush();
+						
+						System.out.println(desks[tableNum].gamerNumber);
+						if (desks[tableNum].gamerNumber == 0) {
+							System.out.println("进来没？" + "table" + tableNum);
+							desks[tableNum] = null;
+						}
 						
 						int n = SOCKETList.size();
 						for (int i = 0; i < n; i++) {

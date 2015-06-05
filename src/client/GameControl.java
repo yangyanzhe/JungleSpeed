@@ -20,8 +20,11 @@ public class GameControl {
 	int[] otherBackNum = new int[MAX_PLAYER_NUM - 1];
 	
 	public GameControl() {
+		init();
+	}
+	
+	public void init(){
 		playersNum = 0;
-		
 		state = 0;
 		isColor = false;
 		caption = new String("欢迎来到图腾快手游戏!");
