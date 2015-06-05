@@ -59,7 +59,7 @@ public class InfoPanel extends JPanel {
 		userPanel.repaint();
 	}
 
-	class UserPanel extends JPanel {		
+	class UserPanel extends JPanel {
 		public void paint(Graphics g) {
 			((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			drawIcon(g);
