@@ -491,6 +491,9 @@ public class Game {
         	startFromTimer1 = false;
         	startFromTimer2 = true;
         	System.out.println("倒计时： " + count);
+        	if(count < 0){
+        		count = 3;
+        	}
     		count--;
     		
     		if (count == 0) {
@@ -514,6 +517,9 @@ public class Game {
         public void run() {
         	System.out.println("倒计时： " + count);
     		count--;
+    		if(count < 0){
+        		count = 3;
+        	}
     		startFromTimer2 = false;
     		startFromTimer1 = true;
     		
