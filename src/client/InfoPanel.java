@@ -1,8 +1,11 @@
 package client;
 
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -17,6 +20,8 @@ import javax.swing.JPanel;
 public class InfoPanel extends JPanel {
 	final static int ICON_WIDTH = 50, ICON_HEIGHT = 50;
 	final static int INTEVAL = 10;
+	final static Font NAME_FONT = new Font("Microsoft YaHei", Font.BOLD, 18);
+	final static Font SCORE_FONT = new Font("Microsoft YaHei", Font.PLAIN, 12);
 	
 	Client client;
 	
@@ -56,6 +61,7 @@ public class InfoPanel extends JPanel {
 
 	class UserPanel extends JPanel {		
 		public void paintComponent(Graphics g) {
+			((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			drawIcon(g);
 			drawName(g);
 			drawScore(g);
@@ -72,14 +78,20 @@ public class InfoPanel extends JPanel {
 		
 		public void drawName(Graphics g) {
 			if (client.player != null && client.player.getName() != null) {
+				Font oldFont = g.getFont();
+				g.setFont(NAME_FONT);
 				g.drawString(client.player.getName(), ICON_WIDTH + INTEVAL, 
 						g.getFontMetrics().getFont().getSize());
+				g.setFont(oldFont);
 			}
 		}
 		
 		public void drawScore(Graphics g) {
 			if (client.player != null && client.player.getScore() != null) {
+				Font oldFont = g.getFont();
+				g.setFont(SCORE_FONT);
 				g.drawString(client.player.getScore().toString(), ICON_WIDTH + INTEVAL, ICON_HEIGHT);
+				g.setFont(oldFont);
 			}
 		}
 	}

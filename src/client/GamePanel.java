@@ -5,7 +5,9 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.MediaTracker;
+import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -31,10 +33,10 @@ public class GamePanel extends JPanel {
 	final static Color BUTTON_TEXT_COLOR = new Color(0, 0, 0);
 	final static Color CAPTION_COLOR = new Color(255, 255, 255);
 	
-	final static Font NAME_FONT = new Font("SimSun", Font.BOLD, 14);
-	final static Font NUM_FONT = new Font("SimSun", Font.PLAIN, 12);
-	final static Font BUTTON_FONT = new Font("SimSun", Font.PLAIN, 30);
-	final static Font CAPTION_FONT = new Font("SimSun", Font.PLAIN, 20);
+	final static Font NAME_FONT = new Font("Microsoft YaHei", Font.BOLD, 14);
+	final static Font NUM_FONT = new Font("Microsoft YaHei", Font.PLAIN, 12);
+	final static Font BUTTON_FONT = new Font("Microsoft YaHei", Font.BOLD, 30);
+	final static Font CAPTION_FONT = new Font("Microsoft YaHei", Font.BOLD, 20);
 	
 	Client client;
 	GameControl game;
@@ -78,6 +80,7 @@ public class GamePanel extends JPanel {
 	}
 	
 	public void paint(Graphics g) {
+		((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		drawBackground(g);
 		drawMyPlayer(g);
 		drawOtherPlayers(g);
