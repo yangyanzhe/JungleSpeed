@@ -265,9 +265,9 @@ class ClientThread extends Thread {
 					int id = tableNum * 8 + seatNum;
 					
 					pClient.app.gamePanel.setVisible(false);
-					//pClient.app.gamehall_panel.drawingPanel.chairs[id] = -1;
-					pClient.app.gamehall_panel.setVisible(true);
+					pClient.app.gamehall_panel.drawingPanel.chairs[id] = -1;
 					pClient.app.gamehall_panel.repaint();
+					pClient.app.gamehall_panel.setVisible(true);
 				}
 			} catch (Exception e) {
 			}

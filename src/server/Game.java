@@ -85,6 +85,7 @@ public class Game {
 		nextGamer = 0;
 		totemCardsNumber = 0;
 		winnerNumber = 0;
+		count = 3;
 		
 		punishedGuy = -1;
 		for(int i = 0; i<8; i++){

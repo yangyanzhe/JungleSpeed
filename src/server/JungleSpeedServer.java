@@ -437,6 +437,7 @@ class Messenger extends Thread {
 						
 						if (len >= 3 && flag == true) {
 							desks[tableNum].isReady = true;
+							desks[tableNum].init(len);
 							System.out.println("We are ready!!");
 							desks[tableNum].gamerNumber = len;
 							desks[tableNum].tableID = tableNum;
@@ -515,10 +516,11 @@ class Messenger extends Thread {
 						System.out.println("用户" + _socket.ID + "离开" + _socket.No + "号桌子");
 						int tableNum = _socket.No;
 						desks[tableNum].remove(_socket);
-						_socket.No = -1;
-						_socket.seatInTable = -1;
+						System.out.println(desks[tableNum].gamerNumber);
 						_socket.os.println("leavetablesuccess~" + _socket.No + "~" + _socket.seatInTable);
 						_socket.os.flush();
+						_socket.No = -1;
+						_socket.seatInTable = -1;
 					}
 					else if (splitStrings[0].equals("cancelready")) {
 						int tableNum = _socket.No;
