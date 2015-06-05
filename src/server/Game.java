@@ -136,6 +136,7 @@ public class Game {
 	}
 
 	public void turnCard(){
+		robFlag = false;
 		currentGamer = nextGamer;
 		if(currentGamer >= gamerNumber){
 			currentGamer = 0;
@@ -317,7 +318,7 @@ public class Game {
 	
 	public boolean judgeRob(int gamerId){
 		System.out.println("gamerId="+gamerId+";currentMode="+currentMode+"currentGamer="+currentGamer);
-		
+			
 		/// 功能牌 ///
 		if(currentMode == 2){
 			return true;		
@@ -394,6 +395,14 @@ public class Game {
 		//grabresult~getall~接收牌的玩家
 		//grabresult~rejecttototem~抛弃牌的玩家
 		//grabresult~rejecttoother~抛弃牌的玩家~接收牌的玩家
+		
+		if(robFlag == false){
+			robFlag = true;
+		}
+		else{
+			return;
+		}
+		
 		nextGamer = gamerId;
 		System.out.println("玩家"+gamerId+"抢到了图腾");
 		if(startFromTimer1){
