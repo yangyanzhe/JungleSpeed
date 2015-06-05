@@ -268,6 +268,13 @@ class ClientThread extends Thread {
 					pClient.app.gamehall_panel.repaint();
 					pClient.app.gamehall_panel.setVisible(true);
 				}
+				else if (splitStrings[0].equals("leavetablebroadcast")) {
+					//leavetablebroadcast~tableNum~seatNum
+					int tableNum = Integer.parseInt(splitStrings[1]);
+					int seatNum = Integer.parseInt(splitStrings[2]);
+					int id = tableNum * 8 + seatNum;
+					pClient.app.gamehall_panel.drawingPanel.chairs[id] = -1;
+				}
 			} catch (Exception e) {
 			}
 		}
