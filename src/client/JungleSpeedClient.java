@@ -70,12 +70,15 @@ class ClientThread extends Thread {
 					pClient.app.loginDialog.setVisible(false);
 					pClient.app.registerDialog.setVisible(false);
 					pClient.app.gamehall_panel.setVisible(true);
+					pClient.app.chatPanel.addSystemMessage(splitStrings[1] + "登录成功");
 				}
 				else if (splitStrings[0].equals("jointablesuccess")){
 					System.out.println("Join Table Success!");
 					pClient.app.gamehall_panel.setVisible(false);
 					pClient.app.gamePanel.repaint();
 					pClient.app.gamePanel.setVisible(true);
+					pClient.app.chatPanel.addSystemMessage(splitStrings[1] + "加入了" 
+							+ splitStrings[2] + "号桌子");
 				}
 				else if (splitStrings[0].equals("jointablefail")) {
 					System.out.println("Join Table Fail!");
@@ -84,6 +87,7 @@ class ClientThread extends Thread {
 					System.out.println("Set ready success!");
 					pClient.app.gamePanel.game.state = 1;
 					pClient.app.gamePanel.repaint();
+					pClient.app.chatPanel.addSystemMessage(splitStrings[1] + "进入了准备状态");
 				}
 				else if (splitStrings[0].equals("setreadyfail")) {
 					System.out.println("Set ready fail!");

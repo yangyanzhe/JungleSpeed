@@ -384,7 +384,7 @@ class Messenger extends Thread {
 							if (isSucceed) {
 								_socket.No = tableNum;
 								_socket.seatInTable = seatPos;
-								_socket.os.println("jointablesuccess");
+								_socket.os.println("jointablesuccess~" + _socket.ID + "~" + splitStrings[1]);
 								_socket.os.flush();
 								
 								//可以把新加入的信息告诉所有客户端让他渲染，不过若加入的动作太过频繁还是不传好
@@ -413,7 +413,7 @@ class Messenger extends Thread {
 						for (int i = 0; i < 8; i++) {
 							if (desks[tableNum]._sockets[i] == _socket) {
 								desks[tableNum].isUserReady[i] = true;
-								_socket.os.println("setreadysuccess");
+								_socket.os.println("setreadysuccess~" + _socket.ID);
 								_socket.os.flush();
 								flag = true;
 								break;
