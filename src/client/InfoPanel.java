@@ -20,7 +20,7 @@ import javax.swing.JPanel;
 public class InfoPanel extends JPanel {
 	final static int ICON_WIDTH = 50, ICON_HEIGHT = 50;
 	final static int INTEVAL = 10;
-	final static Font NAME_FONT = new Font("Microsoft YaHei", Font.BOLD, 18);
+	final static Font NAME_FONT = new Font("Microsoft YaHei", Font.BOLD, 14);
 	final static Font SCORE_FONT = new Font("Microsoft YaHei", Font.PLAIN, 12);
 	
 	Client client;
