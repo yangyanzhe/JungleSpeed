@@ -23,6 +23,7 @@ import javax.swing.text.StyledDocument;
 public class ChatPanel extends JPanel {
 	final static int CHAT_WIDTH = PlayersPanel.TABLE_WIDTH;
 	final static int CHAT_HEIGHT = GamePanel.GAME_HEIGHT - PlayersPanel.TABLE_HEIGHT;
+	final static int ICON_WIDTH = 20, ICON_HEIGHT = 20;
 	
 	Client client;
 	
@@ -78,7 +79,6 @@ public class ChatPanel extends JPanel {
 	}
 	
 	public void addPlayerMessage(ImageIcon icon, String name, String content) {
-		final int ICON_WIDTH = 20, ICON_HEIGHT = 20;
 		ImageIcon iconResized = new ImageIcon();
 		int offset;
 		
