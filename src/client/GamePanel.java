@@ -14,7 +14,7 @@ import java.awt.event.MouseListener;
 
 import javax.swing.JPanel;
 
-//TODO gamecontrol中的iscolor是否为颜色模式
+//TODO gamecontrol中的iscolor是否为颜色模式(测试)
 @SuppressWarnings("serial")
 public class GamePanel extends JPanel {
 	static int GAME_WIDTH = 810;
@@ -136,7 +136,7 @@ public class GamePanel extends JPanel {
 		if (card < 0) {
 			card = cardNum;
 		}
-		g.drawImage(cards[game.myCard], x, y, width, height, null);
+		g.drawImage(cards[card], x, y, width, height, null);
 		Color oldColor = g.getColor();
 		g.setColor(TEXT_COLOR);
 		Font oldFont = g.getFont();
@@ -303,7 +303,7 @@ public class GamePanel extends JPanel {
 	class keyListenser implements KeyListener {
 		public void keyPressed(KeyEvent e) {
 			if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-				// TODO: 按下空格键的事件处理
+				//按下空格键的事件处理
 				client.pClient.os.println("grab");
 				client.pClient.os.flush();
 				//System.out.println("yes");
@@ -331,17 +331,21 @@ public class GamePanel extends JPanel {
 			
 			requestFocus();
 			if (isClicked(xPos, yPos, LEAVE_BUTTON_X, LEAVE_BUTTON_Y, 72, 48)) {
-				// TODO: 点击离开按钮
-				System.out.println("yes");
+				// 点击离开按钮
+				//System.out.println("yes");
+				client.pClient.os.println("leavetable");
+				client.pClient.os.flush();
 			} else if (game.state == 0 && 
 					isClicked(xPos, yPos, READY_BUTTON_X, READY_BUTTON_Y, 72, 48)) {
-				// TODO: 点击准备按钮
+				// 点击准备按钮
 				//System.out.println("yes");
 				client.pClient.os.println("userready");
 				client.pClient.os.flush();
 			} else if (game.state == 1 && 
 					isClicked(xPos, yPos, CANCEL_BUTTON_X, CANCEL_BUTTON_Y, 72, 48)) {
-				// TODO: 点击取消按钮
+				// 点击取消按钮
+				client.pClient.os.println("cancelready");
+				client.pClient.os.flush();
 			}
 		}
 

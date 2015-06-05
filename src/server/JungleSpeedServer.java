@@ -582,6 +582,7 @@ class Messenger extends Thread {
 						}
 					}
 					else if (splitStrings[0].equals("jointable")) {
+						//TODO 一个一个自然加入
 						//加入桌子，命令格式为 jointable~桌子编号~玩家座位位置
 						if (splitStrings.length == 3) {
 							System.out.println("joining table...");
@@ -649,15 +650,15 @@ class Messenger extends Thread {
 						
 						if (len >= 3 && flag == true) {
 							desks[tableNum].isReady = true;
-							for (int i = 0; i < len; i++) {
-								desks[tableNum]._sockets[i].os.println("gamestart");
-								desks[tableNum]._sockets[i].os.flush();
-							}
 							System.out.println("We are ready!!");
 							desks[tableNum].gamerNumber = len;
 							desks[tableNum].tableID = tableNum;
 							desks[tableNum].start();
 							transferGameControl(tableNum);
+							for (int i = 0; i < len; i++) {
+								desks[tableNum]._sockets[i].os.println("gamestart");
+								desks[tableNum]._sockets[i].os.flush();
+							}
 						}
 					}
 					else if (splitStrings[0].equals("grab")) {
@@ -727,6 +728,38 @@ class Messenger extends Thread {
 						System.out.println("用户" + _socket.ID + "离开" + _socket.No + "号桌子");
 						int tableNum = _socket.No;
 						desks[tableNum].remove(_socket);
+						_socket.No = -1;
+						_socket.seatInTable = -1;
+						_socket.os.println("leavetablesuccess");
+						_socket.os.flush();
+					}
+					else if (splitStrings[0].equals("cancelready")) {
+						int tableNum = _socket.No;
+						System.out.println("Cancel ready");
+						for (int i = 0; i < 8; i++) {
+							if (desks[tableNum]._sockets[i] == _socket) {
+								desks[tableNum].isUserReady[i] = false;
+								_socket.os.println("cancelreadysuccess");
+								_socket.os.flush();
+								break;
+							}
+						}
+					}
+					
+					if (desks[_socket.No].isReady) {
+						//颜色模式
+						if (desks[_socket.No].currentMode == 3){
+							for (int i = 0; i < desks[_socket.No].gamerNumber; i++) {
+								desks[_socket.No]._sockets[i].os.println("setcolormodetrue");
+								desks[_socket.No]._sockets[i].os.flush();
+							}
+						}
+						else {
+							for (int i = 0; i < desks[_socket.No].gamerNumber; i++) {
+								desks[_socket.No]._sockets[i].os.println("setcolormodefalse");
+								desks[_socket.No]._sockets[i].os.flush();
+							}
+						}
 					}
 				}
 			} catch (Exception e) {

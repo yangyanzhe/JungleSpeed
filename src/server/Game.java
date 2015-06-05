@@ -393,7 +393,7 @@ public class Game {
 				gamers[gamerId].dropUpCards();
 				
 				for (int i = 0; i < gamerNumber; i++) {
-					_sockets[i].os.println("grabresult~rejecttototem~" + gamerId);
+					_sockets[i].os.println("grabresult~rejecttototem~" + _sockets[gamerId].ID);
 					_sockets[i].os.flush();
 				}
 			}
@@ -404,7 +404,7 @@ public class Game {
 				gamers[gamerId].dropUpCards();
 				
 				for (int i = 0; i < gamerNumber; i++) {
-					_sockets[i].os.println("grabresult~rejecttoother~" + gamerId + "~" + punishedGuy);
+					_sockets[i].os.println("grabresult~rejecttoother~" + _sockets[gamerId].ID + "~" + _sockets[punishedGuy].ID);
 					_sockets[i].os.flush();
 				}
 			}
@@ -439,7 +439,7 @@ public class Game {
 			}
 			
 			for (int i = 0; i < gamerNumber; i++) {
-				_sockets[i].os.println("grabresult~getall~" + gamerId);
+				_sockets[i].os.println("grabresult~getall~" + _sockets[gamerId].ID);
 				_sockets[i].os.flush();
 			}
 		}

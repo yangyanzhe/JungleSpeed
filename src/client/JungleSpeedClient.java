@@ -102,21 +102,29 @@ class ClientThread extends Thread {
 					//grabresult~rejecttototem~抛弃牌的玩家
 					//grabresult~rejecttoother~抛弃牌的玩家~接收牌的玩家
 					if (splitStrings[1].equals("getall")) {
-						int receiver = Integer.parseInt(splitStrings[2]);
+						String receiver = splitStrings[2];
 						System.out.println("玩家" + receiver + "得到了所有的牌！");
+						pClient.app.gamePanel.game.caption = "玩家" + receiver + "得到了所有的牌！";
+						pClient.app.gamePanel.repaint();
 					}
 					else if (splitStrings[1].equals("rejecttototem")) {
-						int giver = Integer.parseInt(splitStrings[2]);
+						String giver = splitStrings[2];
 						System.out.println("玩家" + giver + "把自己翻开的牌放在了图腾下面！");
+						pClient.app.gamePanel.game.caption = "玩家" + giver + "把自己翻开的牌放在了图腾下面！";
+						pClient.app.gamePanel.repaint();
 					}
 					else if (splitStrings[1].equals("rejecttoother")) {
-						int giver = Integer.parseInt(splitStrings[2]);
-						int receiver = Integer.parseInt(splitStrings[3]);
+						String giver = splitStrings[2];
+						String receiver = splitStrings[3];
 						System.out.println("玩家" + giver + "把自己翻开的牌给了玩家" + receiver + "!");
+						pClient.app.gamePanel.game.caption = "玩家" + giver + "把自己翻开的牌给了玩家" + receiver + "!";
+						pClient.app.gamePanel.repaint();
 					}
 				}
 				else if (splitStrings[0].equals("gameover")) {
 					System.out.println("Game Over!");
+					pClient.app.gamePanel.game.caption = "Game Over!";
+					pClient.app.gamePanel.repaint();
 				}
 				else if (splitStrings[0].equals("tie")) {
 					System.out.println("Tie!!");
@@ -230,6 +238,26 @@ class ClientThread extends Thread {
 						pClient.app.gamePanel.game.otherBackNum[i] = Integer.parseInt(splitStrings[i+1]);
 					}
 					pClient.app.gamePanel.repaint();
+				}
+				else if (splitStrings[0].equals("setcolormodetrue")) {
+					pClient.app.gamePanel.game.isColor = true;
+					pClient.app.gamePanel.repaint();
+				}
+				else if (splitStrings[0].equals("setcolormodefalse")) {
+					pClient.app.gamePanel.game.isColor = false;
+					pClient.app.gamePanel.repaint();
+				}
+				else if (splitStrings[0].equals("cancelreadysuccess")) {
+					System.out.println("cancel ready success");
+					pClient.app.gamePanel.game.state = 0;
+					pClient.app.gamePanel.repaint();
+				}
+				else if (splitStrings[0].equals("leavetablesuccess")) {
+					//TODO 离开桌子的gamehall中还有人。bug...
+					System.out.println("leave table success");
+					pClient.app.gamePanel.setVisible(false);
+					pClient.app.gamehall_panel.setVisible(true);
+					pClient.app.gamehall_panel.repaint();
 				}
 			} catch (Exception e) {
 			}
