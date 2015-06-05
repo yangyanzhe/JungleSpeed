@@ -87,6 +87,11 @@ public class Game {
 		winnerNumber = 0;
 		count = 3;
 		
+		robFlag = false;				// actionFlag
+		startFromTimer1 = false;
+		startFromTimer2 = false;
+		end = false;
+		
 		punishedGuy = -1;
 		for(int i = 0; i<8; i++){
 			gamers[i].init();
@@ -290,8 +295,6 @@ public class Game {
 				currentMode = 0;
 			}
 		}
-		
-		
 	}
 	
 	public void selectWinner(){
@@ -308,7 +311,7 @@ public class Game {
 	}
 	
 	public boolean judgeRob(int gamerId){
-		/// 特殊情况  ///
+		/// 功能牌 ///
 		if(currentMode == 2){
 			return true;		
 		}
@@ -342,12 +345,14 @@ public class Game {
 				if(currentMode == 0){
 					if((currentCard / 4) == (gamers[i].cardShown / 4)){
 						punishedGuy = i;
+						System.out.println("currentmode = 0; 找到的punished guy为"+i);
 						return true;
 					}
 				}
 				else if(currentMode == 3){
 					if((currentCard % 4) == (gamers[i].cardShown) % 4){
 						punishedGuy = i;
+						System.out.println("currentmode = 0; 找到的punished guy为"+i);
 						return true;
 					}
 				}
@@ -405,10 +410,12 @@ public class Game {
 			
 			// give cards to the guy being punished
 			else{
+				System.out.println(gamerId + "成功惩罚" + punishedGuy);
 				gamers[punishedGuy].addCards(gamers[gamerId].cardUp, gamers[gamerId].upCount);
 				gamers[gamerId].dropUpCards();
 				
 				for (int i = 0; i < gamerNumber; i++) {
+					System.out.println(gamerId + "成功惩罚" + punishedGuy);
 					_sockets[i].os.println("grabresult~rejecttoother~" + _sockets[gamerId].ID + "~" + _sockets[punishedGuy].ID);
 					_sockets[i].os.flush();
 				}
