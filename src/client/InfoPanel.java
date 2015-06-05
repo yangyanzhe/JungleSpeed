@@ -19,8 +19,8 @@ import javax.swing.JPanel;
 @SuppressWarnings("serial")
 public class InfoPanel extends JPanel {
 	final static int ICON_WIDTH = 50, ICON_HEIGHT = 50;
-	final static int INTEVAL = 10;
-	final static Font NAME_FONT = new Font("Microsoft YaHei", Font.BOLD, 14);
+	final static int INTEVAL = 15;
+	final static Font NAME_FONT = new Font("Microsoft YaHei", Font.BOLD, 18);
 	final static Font SCORE_FONT = new Font("Microsoft YaHei", Font.PLAIN, 12);
 	
 	Client client;
@@ -60,7 +60,7 @@ public class InfoPanel extends JPanel {
 	}
 
 	class UserPanel extends JPanel {		
-		public void paintComponent(Graphics g) {
+		public void paint(Graphics g) {
 			((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			drawIcon(g);
 			drawName(g);
