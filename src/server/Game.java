@@ -158,10 +158,9 @@ public class Game {
 						_sockets[i].os.println("tie");
 						_sockets[i].os.flush();
 					}
-					
 					return;
-				}
-			}
+				} // end if(k == 0)
+			} // end while
 			
 			System.out.println("玩家"+currentGamer+"翻出的牌为："+currentCard);
 			nextGamer = (currentGamer+1) % gamerNumber;
@@ -254,7 +253,7 @@ public class Game {
 					continue;	
 				}
 				
-				currentCard = gamers[currentGamer].turnCard();
+				currentCard = gamers[i].turnCard();
 				if(currentCard == -1){
 					continue;
 				}

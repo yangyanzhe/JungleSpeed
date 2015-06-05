@@ -257,7 +257,6 @@ class ClientThread extends Thread {
 					pClient.app.gamePanel.repaint();
 				}
 				else if (splitStrings[0].equals("leavetablesuccess")) {
-					//TODO 离开桌子的gamehall中还有人。bug...
 					//leavetablesuccess~桌子号~座位号
 					System.out.println("leave table success");
 					int tableNum = Integer.parseInt(splitStrings[1]);
