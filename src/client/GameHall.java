@@ -328,9 +328,6 @@ public class GameHall extends JPanel implements MouseListener{
 		}
 			
 		System.out.println("new player added in Pos: (" + tablex + ", " + tabley + "), in " + id);
-		int number = tablex * 8 + tabley * 16 + id;
-		int playerType = ((int)(Math.random() * 4)) % 2;
-		drawingPanel.addchairs(number, playerType);
 		
 		int tableNoInServer = tablex + tabley * 2;
 		p.pClient.os.println("jointable~" + tableNoInServer + "~" + id);
