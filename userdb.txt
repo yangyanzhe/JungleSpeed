@@ -2,7 +2,7 @@ hiahia 123 -10 res/a.gif
 null 123 0 res/a.gif
 test1 123 0 res/a.gif
 test2 123 0 res/a.gif
-yangyanzhe 1234 60 res/a.gif
-刘桐彤 tt 50 res/a.gif
 hehe 123 50 res/a.gif
-haha 123 60 res/a.gif
+yangyanzhe 1234 3880 res/a.gif
+刘桐彤 tt 39480 res/a.gif
+haha 123 39460 res/a.gif
